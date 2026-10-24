@@ -1,0 +1,232 @@
+{
+ "atualizado": "24/10/2026 12:10 (horário de MS)",
+ "pesquisas": [
+  {
+   "instituto": "Datafolha",
+   "campo": "20–22/10",
+   "n": 2520,
+   "f_total": 47,
+   "l_total": 46,
+   "f": 50.0,
+   "l": 50.0,
+   "registro": "BR-09709/2026",
+   "fonte": "CNN Brasil / Folha, 22/10",
+   "base": "válidos divulgados"
+  },
+  {
+   "instituto": "Quaest",
+   "campo": "17–20/10",
+   "n": 2154,
+   "f_total": 45,
+   "l_total": 44,
+   "f": 50.6,
+   "l": 49.4,
+   "registro": "BR-08535/2026",
+   "fonte": "Gazeta do Povo, 21/10",
+   "base": "válidos calculados dos totais"
+  },
+  {
+   "instituto": "AtlasIntel",
+   "campo": "13–18/10",
+   "n": 4998,
+   "f_total": 49.8,
+   "l_total": 47.6,
+   "f": 51.1,
+   "l": 48.9,
+   "registro": "BR-02418/2026",
+   "fonte": "Gazeta do Povo, 19/10",
+   "base": "válidos divulgados"
+  },
+  {
+   "instituto": "Veritá",
+   "campo": "18–22/10",
+   "n": 15554,
+   "f_total": null,
+   "l_total": null,
+   "f": 51.3,
+   "l": 48.7,
+   "registro": "—",
+   "fonte": "Exame, 24/10",
+   "base": "válidos divulgados"
+  },
+  {
+   "instituto": "Real Time Big Data",
+   "campo": "(até 23/10)",
+   "n": null,
+   "f_total": 49,
+   "l_total": 45,
+   "f": 52.0,
+   "l": 48.0,
+   "registro": "—",
+   "fonte": "Exame, 24/10",
+   "base": "válidos divulgados"
+  },
+  {
+   "instituto": "Alfa Inteligência",
+   "campo": "(até 23/10)",
+   "n": null,
+   "f_total": 49.9,
+   "l_total": 46,
+   "f": 52.0,
+   "l": 48.0,
+   "registro": "—",
+   "fonte": "Exame, 24/10",
+   "base": "válidos divulgados"
+  },
+  {
+   "instituto": "Ipespe/Abrapel",
+   "campo": "(até 23/10)",
+   "n": null,
+   "f_total": 48,
+   "l_total": 47,
+   "f": 50.5,
+   "l": 49.5,
+   "registro": "—",
+   "fonte": "Exame, 24/10",
+   "base": "válidos divulgados"
+  },
+  {
+   "instituto": "Vox Brasil",
+   "campo": "(até 23/10)",
+   "n": null,
+   "f_total": null,
+   "l_total": null,
+   "f": 49.4,
+   "l": 50.6,
+   "registro": "—",
+   "fonte": "Exame, 24/10",
+   "base": "válidos divulgados"
+  },
+  {
+   "instituto": "Gerp",
+   "campo": "14–16/10",
+   "n": 2400,
+   "f_total": 50,
+   "l_total": 45,
+   "f": 52.6,
+   "l": 47.4,
+   "registro": "—",
+   "fonte": "Wikipedia (compilação), 24/10",
+   "base": "válidos calculados dos totais"
+  },
+  {
+   "instituto": "Futura",
+   "campo": "14–15/10",
+   "n": 2000,
+   "f_total": 49,
+   "l_total": 47.5,
+   "f": 50.8,
+   "l": 49.2,
+   "registro": "—",
+   "fonte": "Wikipedia (compilação), 24/10",
+   "base": "válidos calculados dos totais"
+  },
+  {
+   "instituto": "MDA/CNT",
+   "campo": "13–15/10",
+   "n": 2014,
+   "f_total": 46.8,
+   "l_total": 45.9,
+   "f": 50.5,
+   "l": 49.5,
+   "registro": "—",
+   "fonte": "Wikipedia (compilação), 24/10",
+   "base": "válidos calculados dos totais"
+  },
+  {
+   "instituto": "PoderData",
+   "campo": "13–15/10",
+   "n": 3000,
+   "f_total": 47,
+   "l_total": 47,
+   "f": 50.0,
+   "l": 50.0,
+   "registro": "—",
+   "fonte": "Wikipedia (compilação), 24/10",
+   "base": "válidos calculados dos totais"
+  },
+  {
+   "instituto": "Nexus/BTG",
+   "campo": "10–12/10",
+   "n": 2000,
+   "f_total": 48,
+   "l_total": 45,
+   "f": 51.6,
+   "l": 48.4,
+   "registro": "—",
+   "fonte": "Wikipedia (compilação), 24/10",
+   "base": "válidos calculados dos totais"
+  },
+  {
+   "instituto": "Palver",
+   "campo": "10–13/10",
+   "n": 5000,
+   "f_total": 50,
+   "l_total": 49,
+   "f": 50.5,
+   "l": 49.5,
+   "registro": "—",
+   "fonte": "Wikipedia (compilação), 24/10",
+   "base": "válidos calculados dos totais"
+  }
+ ],
+ "media_ponderada": 50.9,
+ "media_simples": 50.9,
+ "mediana": 50.7,
+ "vies_hist": 0.6,
+ "sd": 2.1,
+ "hist": [
+  [
+   "2014 (Dilma x Aécio)",
+   "Aécio: pesquisas ~48,2 · urna 48,4",
+   0.2
+  ],
+  [
+   "2018 (Bolsonaro x Haddad)",
+   "Bolsonaro: pesquisas ~55,5 · urna 55,1",
+   -0.4
+  ],
+  [
+   "2022 (Lula x Bolsonaro)",
+   "Bolsonaro: pesquisas ~47,5 · urna 49,1",
+   1.6
+  ],
+  [
+   "2026 1º turno (válidos, F x L)",
+   "Flávio: pesquisas ~45,9 · urna 47,0",
+   1.1
+  ]
+ ],
+ "prob_flavio": 76,
+ "prob_lula": 24,
+ "esperado": 51.5,
+ "ic90": [
+  48.0,
+  55.0
+ ],
+ "ms": {
+  "primeiro": [
+   58.6,
+   34.68
+  ],
+  "dois": 62.8,
+  "fonte": "TSE via Midiamax, 4–5/10/2026"
+ },
+ "bv": {
+  "primeiro": [
+   59.77,
+   36.25
+  ],
+  "dois": 62.2,
+  "fonte": "TSE via Midiamax, 5/10/2026"
+ },
+ "pendentes": [
+  "Quaest (campo 23–24/10, BR-09158/2026)",
+  "Datafolha final",
+  "AtlasIntel final",
+  "MDA/CNT",
+  "Nexus/BTG",
+  "Palver",
+  "Futura"
+ ]
+}

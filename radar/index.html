@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Radar do 2º turno — 25 de outubro de 2026</title>
+<meta name="description" content="Agregado de pesquisas registradas no TSE para o 2º turno presidencial de 2026, calibrado pelo erro histórico das pesquisas, com probabilidade e faixa esperada.">
+<meta property="og:title" content="Radar do 2º turno — o que as pesquisas dizem, com a margem de erro de verdade">
+<meta property="og:description" content="Média das pesquisas, erro histórico 2014–2026 e probabilidade. Atualizado na véspera.">
+<meta property="og:image" content="https://joaovektordrones-del.github.io/brasil-24-anos/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Grotesk:wght@500;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#0B1020;--bg2:#111833;--card:#151D3B;--line:#26304F;--tx:#EEF2FF;--mut:#9AA6C8;--gold:#F2C14E;--green:#3DDC84;--red:#FF5C5C;--blue:#5B8CFF;--f:#2F7BFF;--l:#E5383B}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,system-ui,sans-serif;line-height:1.5}
+h1,h2,h3{font-family:'Space Grotesk',Inter,sans-serif;text-wrap:balance;margin:0}
+a{color:var(--gold)}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header{padding:56px 0 30px;background:radial-gradient(60rem 30rem at 20% -10%,rgba(47,123,255,.25),transparent 60%),radial-gradient(40rem 20rem at 90% 10%,rgba(229,56,59,.16),transparent 60%)}
+.kicker{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:800}
+h1{font-size:clamp(30px,5.5vw,56px);line-height:1.04;font-weight:700;margin:12px 0 14px}
+.lead{font-size:clamp(16px,2vw,20px);color:var(--mut);max-width:62ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;min-width:0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+section{padding:40px 0;border-top:1px solid var(--line)}
+section h2{font-size:clamp(22px,3.5vw,32px);margin-bottom:8px}
+.sub{color:var(--mut);max-width:70ch;margin-bottom:22px}
+.prob{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+.p{border-radius:18px;padding:22px;border:1px solid var(--line)}
+.p b{display:block;font-family:'Space Grotesk';font-size:clamp(44px,8vw,84px);line-height:1;font-variant-numeric:tabular-nums}
+.p span{display:block;margin-top:8px;color:var(--mut)}
+.pf{background:rgba(47,123,255,.12)}.pf b{color:#7FAEFF}.pl{background:rgba(229,56,59,.12)}.pl b{color:#FF7B7D}
+.barwrap{margin-top:22px}
+.bar{height:34px;border-radius:10px;display:flex;overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%}.bar .f{background:var(--f)}.bar .l{background:var(--l)}
+.ticks{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-top:6px;font-variant-numeric:tabular-nums}
+.note{font-size:12.5px;color:#8E9AC2;margin-top:12px;line-height:1.45}.note b{color:var(--mut)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums}
+th,td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child,td.l{text-align:left}
+th{color:var(--mut);font-weight:600;font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+.tbl{overflow-x:auto}
+.cf{color:#7FAEFF;font-weight:700}.cl{color:#FF7B7D;font-weight:700}
+.callout{border-left:4px solid var(--gold);background:rgba(242,193,78,.07);padding:16px 18px;border-radius:0 14px 14px 0;margin:18px 0}
+.chart{position:relative;height:320px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.kpi b{display:block;font-family:'Space Grotesk';font-size:40px;line-height:1}.kpi span{display:block;color:var(--mut);font-size:13px;margin-top:8px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:#1E2A52;color:var(--tx)}
+footer{padding:36px 0 70px;color:var(--mut);font-size:13px;border-top:1px solid var(--line)}
+.credit{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px 18px}.credit b{color:var(--tx)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<p class="kicker">Radar · 2º turno · domingo, 25 de outubro de 2026</p>
+<h1>O que as pesquisas dizem, com a margem de erro de verdade.</h1>
+<p class="lead">Média de todas as pesquisas registradas no TSE para o 2º turno, corrigida pelo quanto as pesquisas erraram em 2014, 2018, 2022 e no 1º turno deste ano. Nenhum número aqui é "crava": é probabilidade, e a faixa está escrita.</p>
+<div class="prob" id="prob"></div>
+<div class="barwrap card" id="barcard"></div>
+<p class="note" id="upd"></p>
+</div></header>
+
+<section><div class="wrap">
+<h2>1. As pesquisas, uma a uma</h2>
+<p class="sub">Votos válidos (sem brancos, nulos e indecisos). Quando o instituto só divulgou os totais, os válidos foram calculados e estão marcados. Última leitura de cada instituto.</p>
+<div class="card tbl"><table id="tP"></table></div>
+<p class="note" id="pend"></p>
+</div></section>
+
+<section><div class="wrap">
+<h2>2. Quanto as pesquisas erram</h2>
+<p class="sub">Diferença entre a média das pesquisas finais e a urna, na parcela de votos válidos do candidato à direita. Positivo = as pesquisas subestimaram a direita.</p>
+<div class="grid">
+<div class="card tbl"><table id="tH"></table><p class="note">Fontes: TSE (resultados) e compilações públicas das pesquisas finais de cada ano (Datafolha, Ipec/Ibope, Quaest, AtlasIntel, PoderData, Paraná Pesquisas). O 1º turno de 2026 usa só a disputa Flávio × Lula nos válidos.</p></div>
+<div class="card"><div class="chart"><canvas id="cDist"></canvas></div><p class="note" id="distNote"></p></div>
+</div>
+</div></section>
+
+<section><div class="wrap">
+<h2>3. Mato Grosso do Sul e Bela Vista</h2>
+<p class="sub">Aqui não há pesquisa de 2º turno. O que existe é a urna do 1º turno. A projeção supõe que os votos de Cury, Caiado e Renan Santos se dividam na mesma proporção dos dois finalistas, o que é a hipótese mais neutra.</p>
+<div class="kpis" id="kMS"></div>
+<p class="note">Fonte: TSE, 1º turno de 4/10/2026, percentuais de votos válidos por município (compilação Midiamax, 5/10/2026). Flávio venceu em 73 dos 79 municípios de MS; Lula em 6 (Dois Irmãos do Buriti, Japorã, Miranda, Paranhos, Tacuru e Vicentina). Em MS, 1.540.803 compareceram e 483.070 não votaram (abstenção de 23,9%).</p>
+</div></section>
+
+<section><div class="wrap">
+<h2>4. O que olhar na apuração</h2>
+<div class="callout"><b>Antes das 19h:</b> a abstenção. No 1º turno foi 21,1% no Brasil e 23,9% em MS. Abstenção acima disso no Nordeste favorece Flávio; abstenção alta no Sul e Centro-Oeste favorece Lula.<br><br><b>Primeiros 20% apurados:</b> normalmente vêm do Sul/Sudeste e do interior, e exageram a direita. A distância só é confiável depois dos 60%, quando o Nordeste e as capitais entram.<br><br><b>Faixa deste radar:</b> se Flávio fechar entre 48% e 55% dos válidos, as pesquisas acertaram dentro do erro histórico. Fora disso, foi erro de pesquisa, não de leitura.</div>
+<p class="note"><b>Como este radar é calculado:</b> (1) última pesquisa de cada instituto, em votos válidos; (2) média ponderada, com peso maior para institutos com histórico de acerto e campo mais recente; (3) soma do viés médio histórico (+0,6 ponto para a direita); (4) simulação de 200 mil cenários com desvio-padrão que junta o erro histórico e o erro de agregação (2,1 pontos). A probabilidade é a fração de cenários em que cada candidato passa de 50%. O código e os dados estão abertos no repositório.</p>
+</div></section>
+
+<footer><div class="wrap">Radar independente, sem vínculo com instituto ou campanha. Pesquisas citadas com registro no TSE quando disponível. Atualizado conforme as pesquisas finais saem na véspera. <a href="../">Ver o estudo "Brasil, 24 anos"</a>.
+<div class="credit"><span>Desenvolvido por <b>João Marques</b>, arquiteto de sistemas</span><span>WhatsApp <b>(67) 99971-7070</b></span><span>Material de estudo. Não é publicação de órgão público.</span></div>
+</div></footer>
+
+<script>
+const fmt=(n,d=1)=>n==null?'—':n.toLocaleString('pt-BR',{maximumFractionDigits:d,minimumFractionDigits:d});
+fetch('radar.json?v='+Date.now()).then(r=>r.json()).then(R=>{
+document.getElementById('prob').innerHTML=`<div class="p pf"><b>${R.prob_flavio}%</b><span>probabilidade de <b style="display:inline;font-size:inherit;color:#7FAEFF">Flávio Bolsonaro</b> vencer</span></div><div class="p pl"><b>${R.prob_lula}%</b><span>probabilidade de <b style="display:inline;font-size:inherit;color:#FF7B7D">Lula</b> vencer</span></div>`;
+document.getElementById('barcard').innerHTML=`<h3 style="font-size:18px">Resultado esperado em votos válidos</h3><div class="bar" style="margin-top:12px"><i class="f" style="width:${R.esperado}%"></i><i class="l" style="width:${100-R.esperado}%"></i></div><div class="ticks"><span class="cf">Flávio ${fmt(R.esperado)}%</span><span>faixa de 90%: ${fmt(R.ic90[0])}% a ${fmt(R.ic90[1])}%</span><span class="cl">Lula ${fmt(100-R.esperado)}%</span></div><p class="note" style="margin-top:14px">Média ponderada das pesquisas: Flávio ${fmt(R.media_ponderada)}% (média simples ${fmt(R.media_simples)}%, mediana ${fmt(R.mediana)}%). Correção pelo viés histórico: +${fmt(R.vies_hist)} ponto. Um empate técnico nas pesquisas não é um empate na probabilidade: quando a média está acima de 50 e o erro histórico puxa para o mesmo lado, a chance pende.</p>`;
+document.getElementById('upd').textContent='Atualizado em '+R.atualizado+'. Pesquisas finais de sábado entram assim que publicadas.';
+document.getElementById('tP').innerHTML='<thead><tr><th>Instituto</th><th>Campo</th><th>Amostra</th><th>Flávio</th><th>Lula</th><th>Base</th><th>Registro TSE</th><th>Fonte</th></tr></thead><tbody>'+R.pesquisas.map(p=>`<tr><td>${p.instituto}</td><td class="l">${p.campo}</td><td>${p.n?p.n.toLocaleString('pt-BR'):'—'}</td><td class="cf">${fmt(p.f)}%</td><td class="cl">${fmt(p.l)}%</td><td class="l" style="color:var(--mut)">${p.base}</td><td class="l">${p.registro}</td><td class="l" style="color:var(--mut)">${p.fonte}</td></tr>`).join('')+'</tbody>';
+document.getElementById('pend').innerHTML='<b>Ainda sem número neste radar:</b> '+R.pendentes.join(' · ')+'. Registro "—" significa que a reportagem não informou o número do TSE; conferir em divulgacandcontas.tse.jus.br antes de citar.';
+document.getElementById('tH').innerHTML='<thead><tr><th>Eleição</th><th>Pesquisas × urna</th><th>Erro (pp)</th></tr></thead><tbody>'+R.hist.map(h=>`<tr><td>${h[0]}</td><td class="l" style="color:var(--mut)">${h[1]}</td><td class="${h[2]>0?'cf':'cl'}">${h[2]>0?'+':''}${fmt(h[2])}</td></tr>`).join('')+`<tr><td><b>Média</b></td><td class="l"></td><td class="cf">+${fmt(R.vies_hist)}</td></tr></tbody>`;
+document.getElementById('kMS').innerHTML=`<div class="kpi"><b class="cf">${fmt(R.ms.dois)}%</b><span>Flávio em Mato Grosso do Sul, projeção para o 2º turno (1º turno: ${fmt(R.ms.primeiro[0],2)}% × ${fmt(R.ms.primeiro[1],2)}%)</span></div><div class="kpi"><b class="cf">${fmt(R.bv.dois)}%</b><span>Flávio em Bela Vista, projeção para o 2º turno (1º turno: ${fmt(R.bv.primeiro[0],2)}% × ${fmt(R.bv.primeiro[1],2)}%)</span></div><div class="kpi"><b>73 / 79</b><span>municípios de MS em que Flávio venceu no 1º turno</span></div><div class="kpi"><b>23,9%</b><span>abstenção em MS no 1º turno (483.070 eleitores). No Brasil: 21,1%.</span></div>`;
+// distribuição
+try{
+const xs=[],ys=[];const mu=R.esperado,sd=R.sd;for(let x=44;x<=59;x+=0.25){xs.push(x);ys.push(Math.exp(-0.5*((x-mu)/sd)**2))}
+Chart.defaults.color='#9AA6C8';Chart.defaults.borderColor='#26304F';Chart.defaults.font.family='Inter';
+new Chart(cDist,{type:'line',data:{labels:xs,datasets:[{label:'Cenários simulados (densidade)',data:ys,pointRadius:0,borderWidth:2,borderColor:'#F2C14E',fill:{target:'origin',above:'rgba(242,193,78,.12)'},tension:.3,segment:{borderColor:c=>xs[c.p0DataIndex]>=50?'#2F7BFF':'#E5383B'}}]},options:{maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>'Flávio '+fmt(xs[i[0].dataIndex])+'% dos válidos',label:()=>''}}},scales:{x:{ticks:{callback:(v,i)=>xs[i]%2===0?xs[i]+'%':'',maxRotation:0},title:{display:true,text:'parcela de Flávio nos votos válidos'}},y:{display:false}}}});
+}catch(e){console.warn(e)}
+document.getElementById('distNote').innerHTML=`Azul: cenários em que Flávio passa de 50% (${R.prob_flavio}% deles). Vermelho: cenários em que Lula vence (${R.prob_lula}%). Centro em ${fmt(mu)}%, desvio de ${fmt(sd)} pontos.`;
+});
+</script>
+</body>
+</html>
