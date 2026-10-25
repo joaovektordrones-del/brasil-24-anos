@@ -232,6 +232,7 @@ footer b{color:var(--tx)}
     <div class="card">
      <h3>Sinais de anomalia <span style="color:var(--dim);text-transform:none;letter-spacing:0">(para conferir, não é acusação)</span></h3>
      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"><button class="bt" id="btCsvLog">⬇ Planilha de leituras (CSV)</button><button class="bt" id="btCsvAnom">⬇ Planilha de anomalias (CSV)</button><span class="note" style="margin:0;align-self:center" id="logInfo"></span></div><div class="note" style="margin:0 0 8px">Toque em qualquer alerta para ver se saiu voto de um candidato para o outro.</div>
+     <div id="anomTab" style="overflow:auto;margin-bottom:8px"></div>
      <div class="feed" id="anom"><div class="empty">Nenhum sinal até agora.</div></div>
     </div>
     <div class="card">
@@ -553,7 +554,24 @@ function renderTL(){
  for(const g of [0,25,50,75,100])s+=`<text x="${X(g)}" y="139" class="lab" text-anchor="middle">${g}%</text>`;
  svg.innerHTML=s;
 }
+function impacto(d){ // classifica o alerta e estima votos envolvidos
+ if(!d)return null;const a=d.prev,b=d.cur;const dL=b.L-a.L,dF=b.F-a.F,dst=b.st-a.st;
+ if((+b.idg)<(+a.idg))return {tipo:'réplica atrasada',troca:0,retirados:0,dL,dF,dst};
+ if((dL<0&&dF>0)||(dF<0&&dL>0))return {tipo:'possível troca',troca:Math.min(Math.abs(dL),Math.abs(dF)),retirados:0,dL,dF,dst};
+ if(dL<0||dF<0)return {tipo:'retirada/reapuração',troca:0,retirados:Math.abs(Math.min(0,dL))+Math.abs(Math.min(0,dF)),dL,dF,dst};
+ return {tipo:'sem perda de votos',troca:0,retirados:0,dL,dF,dst};
+}
+function renderAnomTab(){
+ const rows=S.anom.filter(e=>e.dados).map(e=>({e,i:impacto(e.dados)}));
+ const tot=rows.reduce((t,r)=>{t.troca+=r.i.troca;t.ret+=r.i.retirados;return t;},{troca:0,ret:0});
+ const sg=n=>(n>0?'+':'')+fmt(n);
+ $('anomTab').innerHTML=`<table class="cmp" style="font-size:11px"><tr><th>hora</th><th>onde</th><th>tipo</th><th>Δ Lula</th><th>Δ Flávio</th><th>Δ seções</th><th>possível troca</th><th>retirados</th></tr>`+
+  (rows.length?rows.map(({e,i})=>`<tr class="clk" data-id="${e.id}" style="cursor:pointer"><td class="mono">${e.t}</td><td>${e.dados.nome}</td><td style="color:${i.tipo==='possível troca'?'var(--red)':i.tipo==='réplica atrasada'?'var(--dim)':'var(--amb)'}">${i.tipo}</td><td class="mono ${i.dL<0?'neg':'pos'}">${sg(i.dL)}</td><td class="mono ${i.dF<0?'neg':'pos'}">${sg(i.dF)}</td><td class="mono">${sg(i.dst)}</td><td class="mono ${i.troca?'neg':''}">${fmt(i.troca)}</td><td class="mono">${fmt(i.retirados)}</td></tr>`).join('')+`<tr><td colspan="6"><b>Total nos alertas com dados</b></td><td class="mono ${tot.troca?'neg':''}"><b>${fmt(tot.troca)}</b></td><td class="mono"><b>${fmt(tot.ret)}</b></td></tr>`:'<tr><td colspan="8" class="empty">Sem alertas com dados ainda (os antigos foram gerados antes do log; toque neles para ver as gerações ao redor).</td></tr>')+'</table>'+
+  `<div class="note" style="margin-top:4px">"possível troca" = o menor dos dois movimentos quando um candidato cai e o outro sobe na mesma geração; "retirados" = votos que saíram do total (seção retirada para reapuração / correção do TSE) sem ir para o outro. Réplica atrasada não altera voto.</div>`;
+ $('anomTab').querySelectorAll('tr.clk').forEach(el=>el.addEventListener('click',()=>investigar(el.dataset.id)));
+}
 function renderFeeds(){
+ renderAnomTab();
  $('anom').innerHTML=S.anom.length?S.anom.map(e=>`<div class="ev ${e.tipo} clk" data-id="${e.id||''}"><span class="t mono">${e.t}</span>${e.txt}</div>`).join(''):'<div class="empty">Nenhum sinal até agora.</div>';
  $('anom').querySelectorAll('.ev.clk').forEach(el=>el.addEventListener('click',()=>investigar(el.dataset.id)));
  $('feed').innerHTML=S.feed.length?S.feed.map(e=>`<div class="ev ${e.tipo}"><span class="t mono">${e.t}</span>${e.txt}</div>`).join(''):'<div class="empty">Aguardando a primeira leitura.</div>';
