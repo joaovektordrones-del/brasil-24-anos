@@ -235,6 +235,11 @@ footer b{color:var(--tx)}
      <div id="anomTab" style="overflow:auto;margin-bottom:8px"></div>
      <div class="feed" id="anom"><div class="empty">Nenhum sinal até agora.</div></div>
     </div>
+    <div class="card" id="saldoCard">
+     <h3>Saldo dos recuos — quem perde e se afeta o resultado</h3>
+     <div id="saldo"></div>
+     <div class="note">Recuo real = geração mais nova do TSE em que um candidato aparece com menos votos que na anterior (réplicas atrasadas já são descartadas). "Impacto" = quanto o placar entre os dois mudaria se os votos retirados fossem devolvidos: se for ~0, os recuos não estão decidindo nada.</div>
+    </div>
     <div class="card">
      <h3>Geração a geração — Brasil <span style="color:var(--dim);text-transform:none;letter-spacing:0">(toda leitura nova do TSE, mesmo sem alerta)</span></h3>
      <div style="overflow:auto"><table class="cmp" id="gerTab" style="font-size:11px"></table></div>
@@ -580,7 +585,18 @@ function renderAnomTab(){
   `<div class="note" style="margin-top:4px">"possível troca" = o menor dos dois movimentos quando um candidato cai e o outro sobe na mesma geração; "retirados" = votos que saíram do total (seção retirada para reapuração / correção do TSE) sem ir para o outro. Réplica atrasada não altera voto.</div>`;
  $('anomTab').querySelectorAll('tr.clk').forEach(el=>el.addEventListener('click',()=>investigar(el.dataset.id)));
 }
+function renderSaldo(){
+ const br=S.log.filter(x=>x.abr==='br');if(!br.length){$('saldo').innerHTML='<div class="empty">aguardando leituras</div>';return;}
+ let remL=0,remF=0,n=0;for(const r of br){if((r.dL||0)<0||(r.dF||0)<0){n++;remL+=Math.min(0,r.dL||0);remF+=Math.min(0,r.dF||0);}}
+ const last=br[br.length-1];const T=last.F+last.L;const pf=T?last.F/T*100:0;const pf2=(last.F-remF)/((last.F-remF)+(last.L-remL))*100;const imp=pf2-pf;
+ const byUf={};for(const r of S.log){if(r.abr==='br')continue;if((r.dL||0)<0||(r.dF||0)<0){const o=byUf[r.abr]||(byUf[r.abr]={L:0,F:0,n:0});o.L+=Math.min(0,r.dL||0);o.F+=Math.min(0,r.dF||0);o.n++;}}
+ const ufs=Object.entries(byUf).sort((a,b)=>(a[1].L+a[1].F)-(b[1].L+b[1].F)).slice(0,10);
+ const tot=-(remL+remF);const quem=tot?(-remF>-remL?'Flávio':'Lula'):null;
+ $('saldo').innerHTML=`<div class="vd ${n?(Math.abs(imp)>=0.05?'red':'amb'):'ok'}">${n?`<b>${n} recuo(s) real(is)</b> em ${br.length} gerações desde ${br[0].hg}. Retirados: Lula <b>${fmt(-remL)}</b> · Flávio <b>${fmt(-remF)}</b>${quem?` → quem mais perdeu nos recuos: <b>${quem}</b> (${pc(quem==='Flávio'?-remF/tot*100:-remL/tot*100,0)} dos retirados, contra ${pc(quem==='Flávio'?pf:100-pf,0)} do placar)`:''}. <b>Impacto no placar entre os dois: ${imp>=0?'+':''}${imp.toFixed(3).replace('.',',')} p.p. para Flávio</b> se tudo fosse devolvido — ${Math.abs(imp)<0.05?'não afeta o resultado':'relevante, acompanhar'}.`:`<b>Nenhum recuo real</b> em ${br.length} gerações do Brasil desde ${br[0].hg}: ninguém perdeu voto; as quedas vistas antes eram réplica atrasada do TSE. <b>Impacto no resultado: 0,00 p.p.</b>`}</div>`+
+  (ufs.length?`<table class="cmp"><tr><th>UF</th><th>recuos</th><th>retirados Lula</th><th>retirados Flávio</th></tr>${ufs.map(([u,o])=>`<tr><td><b>${u.toUpperCase()}</b></td><td class="mono">${o.n}</td><td class="mono neg">${fmt(-o.L)}</td><td class="mono neg">${fmt(-o.F)}</td></tr>`).join('')}</table>`:'<div class="note" style="margin:0">Nenhum recuo real registrado nos estados.</div>');
+}
 function renderGer(){
+ renderSaldo();
  const rows=S.log.filter(x=>x.abr==='br').slice(-15).reverse();const sg=n=>n==null?'—':(n>0?'+':'')+fmt(n);
  $('gerTab').innerHTML='<tr><th>TSE</th><th>seções</th><th>Δ seç.</th><th>Lula</th><th>Δ Lula</th><th>Flávio</th><th>Δ Flávio</th><th>abst.</th><th>B+N</th></tr>'+(rows.length?rows.map(r=>{const ab=r.te?(1-r.c/r.te)*100:null;const bn=r.tv?(r.vb+r.vn)/r.tv*100:null;return `<tr><td class="mono">${r.hg}</td><td class="mono">${fmt(r.st)}</td><td class="mono ${r.dst<0?'neg':''}">${sg(r.dst)}</td><td class="mono">${fmt(r.L)}</td><td class="mono ${r.dL<0?'neg':'pos'}">${sg(r.dL)}</td><td class="mono">${fmt(r.F)}</td><td class="mono ${r.dF<0?'neg':'pos'}">${sg(r.dF)}</td><td class="mono">${ab==null?'—':pc(ab,1)}</td><td class="mono">${bn==null?'—':pc(bn,1)}</td></tr>`;}).join(''):'<tr><td colspan="9" class="empty">aguardando leituras</td></tr>');
  const ufsA=UFS.filter(u=>S.uf[u]&&S.uf[u].c>0).sort((a,b)=>S.uf[b].pst-S.uf[a].pst);
