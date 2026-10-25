@@ -286,7 +286,7 @@ const $=id=>document.getElementById(id);
 const DEMO=new URLSearchParams(location.search).get('demo')==='1';
 const ELE=DEMO?'6257':'6258', ELEG='6260';
 const ONPAGES=location.hostname.endsWith('github.io');
-const API=ONPAGES?'https://acontabrasil.com.br/api/tse?p=':'/api/tse?p=';
+const API=ONPAGES?'https://acontabrasil-seven.vercel.app/api/tse?p=':'/api/tse?p=';
 const UFS=Object.keys(R1).filter(k=>k!=='br');
 const fmt=n=>Number(n).toLocaleString('pt-BR');
 const pc=(n,d=2)=>Number(n).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d})+'%';
