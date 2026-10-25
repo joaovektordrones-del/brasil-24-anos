@@ -7,6 +7,8 @@ const ORIGEM = 'https://resultados.tse.jus.br/oficial/ele2026/';
 const ELE = '6258', ELE1 = '6257';
 const UA = { headers: { 'User-Agent': 'acontabrasil.com.br (leitura publica TSE)' } };
 const UFS = 'ac al am ap ba ce df es go ma mg ms mt pa pb pe pi pr rj rn ro rr rs sc se sp to zz'.split(' ');
+// 1º turno por UF (Flávio, Lula), TSE 6257 — fallback enquanto a base municipal carrega
+const R1UF = {"ac":[302807,134770],"al":[735718,995459],"am":[976764,1046996],"ap":[212278,212503],"ba":[2442585,5664771],"ce":[1756850,3555263],"df":[909616,675627],"es":[1233194,850028],"go":[2051888,1188880],"ma":[1239040,2566301],"mg":[5777548,5188936],"ms":[873351,516855],"mt":[1298581,581681],"pa":[2163957,2427237],"pb":[831377,1541127],"pe":[1738043,3553971],"pi":[517028,1523710],"pr":[3945345,2054597],"rj":[4966844,3693021],"rn":[720493,1237963],"ro":[652988,250667],"rr":[231322,74420],"rs":[3573783,2294759],"sc":[3000020,1127168],"se":[417839,856019],"sp":[12922023,9505413],"to":[469321,404009],"zz":[143900,157387]};
 const C = global.__acbProj || (global.__acbProj = { cfg: null, r1: {}, carregando: null, erro: {} });
 
 const dorme = ms => new Promise(r => setTimeout(r, ms));
@@ -53,7 +55,8 @@ module.exports = async (req, res) => {
         for (const cd in r1) { const m = r1[cd]; const v = m.F + m.L; if (!v) continue; const p = m.F / v * 100; const a = abm[cd]; const f = a && +a.s.ts ? +a.s.st / +a.s.ts : 0; V += v; Pw += p * v; Vc += f * v; Ew += p * f * v; }
         P = Pw / V;
       }
-      const prior = r1 ? P : null, E = Vc ? Ew / Vc : null, W = V ? Vc / V : 0;
+      if (!r1 && R1UF[uf]) { const [f1, l1] = R1UF[uf]; V = f1 + l1; P = V ? f1 / V * 100 : 0; const sa = u.s && +u.s.ts ? +u.s.st / +u.s.ts : 0; Vc = sa * V; Ew = P * Vc; }
+      const prior = (r1 || R1UF[uf]) ? P : null, E = (r1 && Vc) ? Ew / Vc : null, W = V ? Vc / V : 0;
       const swing = (O != null && E != null && W > 0.02) ? O - E : null;
       ufs.push({ uf, O, E, prior, W, swing, V, base: !!r1 });
       if (swing != null) { swNum += swing * Vc; swDen += Vc; }
