@@ -60,7 +60,7 @@ header{position:sticky;top:0;z-index:20;background:rgba(11,15,20,.92);backdrop-f
 .grid{display:grid;grid-template-columns:300px 1fr 320px;gap:14px;padding:12px 0 40px}
 @media(max-width:1100px){.grid{grid-template-columns:1fr 1fr}.col-map{grid-column:1/-1;order:-1}}
 @media(max-width:720px){.grid{grid-template-columns:1fr}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.grid>*{min-width:0}.card{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
 .card h3{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);margin-bottom:10px;font-weight:700}
 .card+.card{margin-top:14px}
 .kv{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px dashed var(--line);gap:8px}
@@ -236,6 +236,16 @@ footer b{color:var(--tx)}
      <div class="feed" id="anom"><div class="empty">Nenhum sinal até agora.</div></div>
     </div>
     <div class="card">
+     <h3>Geração a geração — Brasil <span style="color:var(--dim);text-transform:none;letter-spacing:0">(toda leitura nova do TSE, mesmo sem alerta)</span></h3>
+     <div style="overflow:auto"><table class="cmp" id="gerTab" style="font-size:11px"></table></div>
+     <div class="note">Δ = diferença para a geração anterior. Abstenção = eleitores aptos das seções já apuradas que não votaram. B+N = brancos + nulos sobre o comparecimento. Vermelho = candidato perdeu votos.</div>
+    </div>
+    <div class="card">
+     <h3>Abstenção e brancos/nulos por estado vs. 1º turno</h3>
+     <div style="overflow:auto"><table class="cmp" id="absTab" style="font-size:11px"></table></div>
+     <div class="note">Comparação com a abstenção e B+N finais do 1º turno (TSE). Diferença ≥ 3 p.p. fica em âmbar, ≥ 8 em vermelho. Com pouca apuração a comparação ainda não vale.</div>
+    </div>
+    <div class="card">
      <h3>Últimas atualizações</h3>
      <div class="feed" id="feed"><div class="empty">Aguardando a primeira leitura.</div></div>
     </div>
@@ -342,7 +352,7 @@ function parse(j){
  return {F,L,T,pf:T?F/T*100:null,pl:T?L/T*100:null,
   pst:parseFloat(String(j.s&&j.s.pstn||'0').replace(',','.'))||0, st:+(j.s&&j.s.st||0), ts:+(j.s&&j.s.ts||0),
   vv:+(j.v&&j.v.vv||0), vb:+(j.v&&j.v.vb||0), vn:+(j.v&&j.v.tvn||0), tv:+(j.v&&j.v.tv||0),
-  te:+(j.e&&j.e.te||0), c:+(j.e&&j.e.c||0), a:+(j.e&&j.e.a||0), pc:parseFloat(String(j.e&&j.e.pcn||'0').replace(',','.'))||0, pa:parseFloat(String(j.e&&j.e.pan||'0').replace(',','.'))||0,
+  te:+(j.e&&j.e.te||0), est:+(j.e&&j.e.est||0), c:+(j.e&&j.e.c||0), a:+(j.e&&j.e.a||0), pc:parseFloat(String(j.e&&j.e.pcn||'0').replace(',','.'))||0, pa:parseFloat(String(j.e&&j.e.pan||'0').replace(',','.'))||0,
   dg:j.dg,hg:j.hg,idg:j.idg,tf:j.tf==='s',cand};
 }
 const r1share=k=>{const r=R1[k];return r[6]/(r[6]+r[7])*100;};
@@ -377,7 +387,7 @@ function registrar(abr,d){
  // guarda toda geração nova do arquivo do TSE (uma linha por idg) — base da planilha
  const last=S.log.filter(x=>x.abr===abr).slice(-1)[0];
  if(last&&last.idg===d.idg)return false;
- S.log.push({t:new Date().toISOString(),abr,idg:d.idg,hg:d.hg,pst:+d.pst.toFixed(3),st:d.st,ts:d.ts,L:d.L,F:d.F,vb:d.vb,vn:d.vn,tv:d.tv,c:d.c,a:d.a,
+ S.log.push({t:new Date().toISOString(),abr,idg:d.idg,hg:d.hg,pst:+d.pst.toFixed(3),st:d.st,ts:d.ts,L:d.L,F:d.F,vb:d.vb,vn:d.vn,tv:d.tv,c:d.c,a:d.a,te:d.est||0,
   dL:last?d.L-last.L:null,dF:last?d.F-last.F:null,dst:last?d.st-last.st:null});
  if(S.log.length>6000)S.log=S.log.slice(-6000);
  try{localStorage.setItem('acb_log_'+ELE,JSON.stringify(S.log));}catch(e){}
@@ -428,7 +438,7 @@ async function cicloBR(){
   if(prev&&prev.T>0&&cur.T>0&&(prev.pf>50)!==(cur.pf>50)) evento('marco',`Brasil: ${cur.pf>50?'Flávio':'Lula'} passa a liderar com ${pc(cur.pst,1)} das seções apuradas.`,'feed');
   const marcos=[10,25,50,75,90,95,99,100];for(const m of marcos){if(prev&&prev.pst<m&&cur.pst>=m)evento('info',`Brasil: ${m}% das seções apuradas — Lula ${pc(cur.pl)} × Flávio ${pc(cur.pf)}.`,'feed');}
   if(cur.tf&&!(prev&&prev.tf)) evento('marco',`TSE marcou a totalização como final: Lula ${pc(cur.pl)} × Flávio ${pc(cur.pf)}.`,'feed');
-  renderBR();
+  renderBR();renderGer();
  }catch(e){errCount++; if(errCount>=3)setLive('err','sem resposta do TSE/repassador — tentando'); console.warn(e);}
  // parada
  if(S.br&&S.br.pst>0&&S.br.pst<100&&Date.now()-S.lastChange>10*60e3){evento('sinal',`Brasil: arquivo do TSE sem mudança há ${Math.round((Date.now()-S.lastChange)/60e3)} min com ${pc(S.br.pst,1)} apurado.`,'anom');S.lastChange=Date.now();}
@@ -444,7 +454,7 @@ async function cicloUF(){
    if(prev&&prev.T>0&&cur.T>0&&(prev.pf>50)!==(cur.pf>50)&&cur.pst>=30) evento('marco',`${UF_NOME[u]}: ${cur.pf>50?'Flávio':'Lula'} assume a liderança (${pc(cur.pst,1)} apurado).`,'feed');
   }catch(e){}
  }));
- renderMapa();renderUfs();renderRegioes();renderProj();renderMS();if(S.sel)renderUfd(S.sel);
+ renderMapa();renderUfs();renderRegioes();renderProj();renderMS();renderGer();if(S.sel)renderUfd(S.sel);
 }
 async function cicloMS(){
  try{S.bv=parse(await ler(`${ELE}/dados/ms/ms90417-c0001-e00${ELE}-u.json`));}catch(e){}
@@ -569,6 +579,12 @@ function renderAnomTab(){
   (rows.length?rows.map(({e,i})=>`<tr class="clk" data-id="${e.id}" style="cursor:pointer"><td class="mono">${e.t}</td><td>${e.dados.nome}</td><td style="color:${i.tipo==='possível troca'?'var(--red)':i.tipo==='réplica atrasada'?'var(--dim)':'var(--amb)'}">${i.tipo}</td><td class="mono ${i.dL<0?'neg':'pos'}">${sg(i.dL)}</td><td class="mono ${i.dF<0?'neg':'pos'}">${sg(i.dF)}</td><td class="mono">${sg(i.dst)}</td><td class="mono ${i.troca?'neg':''}">${fmt(i.troca)}</td><td class="mono">${fmt(i.retirados)}</td></tr>`).join('')+`<tr><td colspan="6"><b>Total nos alertas com dados</b></td><td class="mono ${tot.troca?'neg':''}"><b>${fmt(tot.troca)}</b></td><td class="mono"><b>${fmt(tot.ret)}</b></td></tr>`:'<tr><td colspan="8" class="empty">Sem alertas com dados ainda (os antigos foram gerados antes do log; toque neles para ver as gerações ao redor).</td></tr>')+'</table>'+
   `<div class="note" style="margin-top:4px">"possível troca" = o menor dos dois movimentos quando um candidato cai e o outro sobe na mesma geração; "retirados" = votos que saíram do total (seção retirada para reapuração / correção do TSE) sem ir para o outro. Réplica atrasada não altera voto.</div>`;
  $('anomTab').querySelectorAll('tr.clk').forEach(el=>el.addEventListener('click',()=>investigar(el.dataset.id)));
+}
+function renderGer(){
+ const rows=S.log.filter(x=>x.abr==='br').slice(-15).reverse();const sg=n=>n==null?'—':(n>0?'+':'')+fmt(n);
+ $('gerTab').innerHTML='<tr><th>TSE</th><th>seções</th><th>Δ seç.</th><th>Lula</th><th>Δ Lula</th><th>Flávio</th><th>Δ Flávio</th><th>abst.</th><th>B+N</th></tr>'+(rows.length?rows.map(r=>{const ab=r.te?(1-r.c/r.te)*100:null;const bn=r.tv?(r.vb+r.vn)/r.tv*100:null;return `<tr><td class="mono">${r.hg}</td><td class="mono">${fmt(r.st)}</td><td class="mono ${r.dst<0?'neg':''}">${sg(r.dst)}</td><td class="mono">${fmt(r.L)}</td><td class="mono ${r.dL<0?'neg':'pos'}">${sg(r.dL)}</td><td class="mono">${fmt(r.F)}</td><td class="mono ${r.dF<0?'neg':'pos'}">${sg(r.dF)}</td><td class="mono">${ab==null?'—':pc(ab,1)}</td><td class="mono">${bn==null?'—':pc(bn,1)}</td></tr>`;}).join(''):'<tr><td colspan="9" class="empty">aguardando leituras</td></tr>');
+ const ufsA=UFS.filter(u=>S.uf[u]&&S.uf[u].c>0).sort((a,b)=>S.uf[b].pst-S.uf[a].pst);
+ $('absTab').innerHTML='<tr><th>UF</th><th>apurado</th><th>abst. agora</th><th>abst. 1ºT</th><th>Δ</th><th>B+N agora</th><th>B+N 1ºT</th><th>Δ</th></tr>'+ufsA.map(u=>{const d=S.uf[u],r=R1[u];const ab=d.pa,ab1=(1-r[1]/r[0])*100,bn=d.tv?(d.vb+d.vn)/d.tv*100:0,bn1=(r[3]+r[4])/r[1]*100;const c=x=>Math.abs(x)>=8?'style="color:var(--red);font-weight:700"':Math.abs(x)>=3?'style="color:var(--amb)"':'';return `<tr><td><b>${u.toUpperCase()}</b></td><td class="mono">${pc(d.pst,0)}</td><td class="mono">${pc(ab,1)}</td><td class="mono" style="color:var(--mut)">${pc(ab1,1)}</td><td class="mono" ${c(ab-ab1)}>${(ab-ab1>0?'+':'')+(ab-ab1).toFixed(1).replace('.',',')}</td><td class="mono">${pc(bn,1)}</td><td class="mono" style="color:var(--mut)">${pc(bn1,1)}</td><td class="mono" ${c(bn-bn1)}>${(bn-bn1>0?'+':'')+(bn-bn1).toFixed(1).replace('.',',')}</td></tr>`;}).join('');
 }
 function renderFeeds(){
  renderAnomTab();
