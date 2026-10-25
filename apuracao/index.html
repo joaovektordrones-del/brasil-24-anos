@@ -124,6 +124,7 @@ table.gov th{color:var(--mut);font-weight:600;font-size:11px}
 table.gov td.n{text-align:right}
 .sec{display:none}.sec.on{display:block}
 .bt{font:inherit;font-size:12px;background:var(--card2);color:var(--tx);border:1px solid var(--line);border-radius:6px;padding:4px 10px;cursor:pointer}.bt:hover{border-color:var(--amb)}
+.vd{font-size:14px;padding:10px 12px;border-radius:8px;margin-bottom:10px;line-height:1.4}.vd.red{background:#2a1416;border:1px solid var(--red)}.vd.ok{background:#12221a;border:1px solid var(--ok)}.vd.amb{background:#241e10;border:1px solid var(--amb)}
 .ev.clk{cursor:pointer}.ev.clk:hover{outline:1px solid var(--amb)}
 .modal{display:none;position:fixed;inset:0;background:#000a;z-index:50;padding:16px;overflow:auto}.modal.on{display:block}.modal .box{max-width:900px;margin:20px auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
 table.cmp{width:100%;border-collapse:collapse;font-size:12px}table.cmp td,table.cmp th{padding:4px 6px;border-bottom:1px dashed var(--line);text-align:right}table.cmp td:first-child,table.cmp th:first-child{text-align:left;color:var(--mut)}table.cmp .neg{color:var(--red);font-weight:700}table.cmp .pos{color:var(--ok)}
@@ -230,7 +231,7 @@ footer b{color:var(--tx)}
    <div class="col-right">
     <div class="card">
      <h3>Sinais de anomalia <span style="color:var(--dim);text-transform:none;letter-spacing:0">(para conferir, não é acusação)</span></h3>
-     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"><button class="bt" id="btCsvLog">⬇ Planilha de leituras (CSV)</button><button class="bt" id="btCsvAnom">⬇ Planilha de anomalias (CSV)</button><span class="note" style="margin:0;align-self:center" id="logInfo"></span></div>
+     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"><button class="bt" id="btCsvLog">⬇ Planilha de leituras (CSV)</button><button class="bt" id="btCsvAnom">⬇ Planilha de anomalias (CSV)</button><span class="note" style="margin:0;align-self:center" id="logInfo"></span></div><div class="note" style="margin:0 0 8px">Toque em qualquer alerta para ver se saiu voto de um candidato para o outro.</div>
      <div class="feed" id="anom"><div class="empty">Nenhum sinal até agora.</div></div>
     </div>
     <div class="card">
@@ -325,7 +326,7 @@ $('avisoHora').textContent='Urnas fecham às 17h de Brasília; os arquivos do TS
 const S={br:null,uf:{},prev:{},hist:[],anom:[],feed:[],lastIdg:null,lastChange:Date.now(),mode:'lider',sel:null,pesq:null,bv:null,gov:{},log:[],maxIdg:{},stale:0};
 try{const l=JSON.parse(localStorage.getItem('acb_log_'+ELE)||'[]');if(Array.isArray(l))S.log=l;}catch(e){}
 try{const h=JSON.parse(localStorage.getItem('acb_hist_'+ELE)||'[]');if(Array.isArray(h))S.hist=h;}catch(e){}
-try{const a=JSON.parse(localStorage.getItem('acb_anom_'+ELE)||'[]');if(Array.isArray(a))S.anom=a;}catch(e){}
+try{const a=JSON.parse(localStorage.getItem('acb_anom_'+ELE)||'[]');if(Array.isArray(a))S.anom=a.map((x,i)=>({...x,id:x.id||('old'+i)}));}catch(e){}
 
 // ---------- leitura ----------
 async function ler(p){
@@ -497,7 +498,7 @@ function renderUfd(u){
  $('ufPst').textContent=pc(d.pst)+` (${fmt(d.st)}/${fmt(d.ts)})`;$('ufR1').textContent=`Flávio ${pc(r1share(u),1)} · Lula ${pc(100-r1share(u),1)}`;
  const sw=d.pf-r1share(u);$('ufSw').textContent=(sw>0?'Flávio +':'Lula +')+pc(Math.abs(sw),1);
  $('ufComp').textContent=d.c?pc(d.pc,1)+' / '+pc(d.pa,1):'—';$('ufBN').textContent=d.tv?pc(d.vb/d.tv*100,1)+' / '+pc(d.vn/d.tv*100,1):'—';
- const P=projetar();$('ufProj').textContent=P?`Flávio ${pc(P.porUf[u].est,1)} (peso do apurado ${Math.round(P.porUf[u].w*100)}%)`:'—';
+ const su=S.proj&&S.proj.ufs&&S.proj.ufs.find(x=>x.uf===u);if(su&&su.est!=null){$('ufProj').textContent=`Flávio ${pc(su.est,1)} · ${Math.round(su.W*100)}% dos votos esperados contados · virada ${su.swing!=null?(su.swing>=0?'+':'')+su.swing.toFixed(1).replace('.',',')+' p.p.':'—'}`;}else{const P=projetar();$('ufProj').textContent=P?`Flávio ${pc(P.porUf[u].est,1)} (peso do apurado ${Math.round(P.porUf[u].w*100)}%)`:'—';}
 }
 function renderUfs(){
  const el=$('ufs');const arr=UFS.filter(u=>S.uf[u]).sort((a,b)=>S.uf[b].pst-S.uf[a].pst||a.localeCompare(b));
@@ -512,7 +513,24 @@ function renderRegioes(){
  el.innerHTML=h;
 }
 let lastProjLeader=null;
+async function cicloProj(){
+ try{const j=await (await fetch((ONPAGES?'https://acontabrasil-seven.vercel.app':'')+'/api/projecao?poll='+(S.pesq?S.pesq.esperado:51.5),{cache:'no-store'})).json(); if(j.erro)throw new Error(j.erro); S.proj=j; renderProj();}catch(e){console.warn('projecao',e);}
+}
 function renderProj(){
+ const J=S.proj;
+ if(J&&J.est!=null){
+  const lead=J.est>50?'Flávio':'Lula';const v=J.est>50?J.est:100-J.est;
+  $('projBig').innerHTML=`<span style="color:${lead==='Flávio'?'var(--f2)':'var(--l2)'}">${lead}</span> ${pc(v,1)}`;
+  const cob=Math.round(J.cobertura*100);
+  $('projSub').innerHTML=`Estimativa do resultado final (válidos, entre os dois) · <b>corrigida por composição município a município</b>: ${cob}% dos votos esperados já contados · virada real de ${J.swing_nat>=0?'+':''}${J.swing_nat.toFixed(1).replace('.',',')} p.p. para Flávio vs. 1º turno · só dados: Flávio ${pc(J.estDados,1)} · base do 1º turno carregada em ${J.base_ufs}/28 UFs`;
+  $('ic90').textContent=`${pc(J.ic90[0],1)} a ${pc(J.ic90[1],1)}`;
+  $('prL').textContent=pc((1-J.prF)*100,0);$('prF').textContent=pc(J.prF*100,0);
+  const lo=Math.max(0,Math.min(100,J.ic90[0]-40))/20*100, hi=Math.max(0,Math.min(100,J.ic90[1]-40))/20*100;
+  $('icRng').style.left=Math.min(lo,hi)+'%';$('icRng').style.width=Math.max(1,Math.abs(hi-lo))+'%';
+  $('projNota').textContent='Método: para cada município, o TSE informa quantas seções já apuraram; combinando com o voto do município no 1º turno, calculamos o resultado que a apuração parcial teria se nada tivesse mudado. A diferença para o observado é a virada real (sem o viés de quais lugares apuram primeiro). A estimativa final = base do 1º turno + virada, combinada com a média calibrada das pesquisas enquanto a amostra é pequena; a faixa estreita conforme a cobertura cresce.';
+  if(lastProjLeader&&lastProjLeader!==lead&&S.br&&S.br.pst>=15) evento('alerta',`Projeção mudou de lado: agora aponta ${lead} (${pc(v,1)}) com ${pc(S.br.pst,1)} apurado.`,'anom');
+  lastProjLeader=lead; return;
+ }
  const P=projetar();
  if(!P){$('projBig').textContent='Aguardando apuração';$('projSub').textContent='A projeção começa quando houver seções apuradas em pelo menos 5 estados.';$('ic90').textContent='—';$('prL').textContent='—';$('prF').textContent='—';return;}
  const lead=P.estF>50?'Flávio':'Lula';const v=P.estF>50?P.estF:100-P.estF;
@@ -536,7 +554,7 @@ function renderTL(){
  svg.innerHTML=s;
 }
 function renderFeeds(){
- $('anom').innerHTML=S.anom.length?S.anom.map(e=>`<div class="ev ${e.tipo}${e.dados?' clk':''}" data-id="${e.id||''}"><span class="t mono">${e.t}</span>${e.txt}</div>`).join(''):'<div class="empty">Nenhum sinal até agora.</div>';
+ $('anom').innerHTML=S.anom.length?S.anom.map(e=>`<div class="ev ${e.tipo} clk" data-id="${e.id||''}"><span class="t mono">${e.t}</span>${e.txt}</div>`).join(''):'<div class="empty">Nenhum sinal até agora.</div>';
  $('anom').querySelectorAll('.ev.clk').forEach(el=>el.addEventListener('click',()=>investigar(el.dataset.id)));
  $('feed').innerHTML=S.feed.length?S.feed.map(e=>`<div class="ev ${e.tipo}"><span class="t mono">${e.t}</span>${e.txt}</div>`).join(''):'<div class="empty">Aguardando a primeira leitura.</div>';
 }
@@ -583,8 +601,22 @@ function baixar(nome,txt){const a=document.createElement('a');a.href=URL.createO
 $('btCsvLog').addEventListener('click',()=>baixar('leituras_tse_'+ELE+'.csv',csv(S.log,['t','abr','idg','hg','pst','st','ts','L','F','dL','dF','dst','vb','vn','tv','c','a'])));
 $('btCsvAnom').addEventListener('click',()=>baixar('anomalias_'+ELE+'.csv',csv(S.anom.map(e=>({hora:e.t,tipo:e.tipo,texto:e.txt,abr:e.dados?e.dados.abr:'',idg_antes:e.dados?e.dados.prev.idg:'',idg_depois:e.dados?e.dados.cur.idg:'',L_antes:e.dados?e.dados.prev.L:'',L_depois:e.dados?e.dados.cur.L:'',F_antes:e.dados?e.dados.prev.F:'',F_depois:e.dados?e.dados.cur.F:'',secoes_antes:e.dados?e.dados.prev.st:'',secoes_depois:e.dados?e.dados.cur.st:''})),['hora','tipo','abr','idg_antes','idg_depois','L_antes','L_depois','F_antes','F_depois','secoes_antes','secoes_depois','texto'])));
 $('mdX').addEventListener('click',()=>$('modal').classList.remove('on'));$('modal').addEventListener('click',e=>{if(e.target.id==='modal')$('modal').classList.remove('on');});
+function vered(dL,dF){
+ if(dF<0&&dL>0)return `<div class="vd red">Saiu voto do Flávio para o Lula? <b>PARECE QUE SIM</b> — Flávio ${fmt(dF)} e Lula +${fmt(dL)} na mesma geração. Conferir os estados abaixo e os BUs no TSE.</div>`;
+ if(dL<0&&dF>0)return `<div class="vd red">Saiu voto do Lula para o Flávio? <b>PARECE QUE SIM</b> — Lula ${fmt(dL)} e Flávio +${fmt(dF)} na mesma geração. Conferir os estados abaixo e os BUs no TSE.</div>`;
+ if(dL<0&&dF<0)return `<div class="vd ok">Saiu voto de um para o outro? <b>NÃO</b> — os dois caíram juntos (Lula ${fmt(dL)}, Flávio ${fmt(dF)}): seção retirada para reapuração ou réplica atrasada do TSE, não transferência.</div>`;
+ if(dL<0||dF<0)return `<div class="vd amb">Saiu voto de um para o outro? <b>NÃO</b> — só um caiu (Lula ${dL>=0?'+':''}${fmt(dL)}, Flávio ${dF>=0?'+':''}${fmt(dF)}) e o outro não ganhou o equivalente. Provável retirada de seção; acompanhar as próximas gerações.</div>`;
+ return `<div class="vd ok">Saiu voto de um para o outro? <b>NÃO</b> — nenhum candidato perdeu votos nesta geração (Lula +${fmt(dL)}, Flávio +${fmt(dF)}).</div>`;
+}
+function investigarAntigo(e){
+ const ta=e.ts;const rows=S.log.filter(x=>x.abr==='br'&&Math.abs(new Date(x.t).getTime()-ta)<=6*60e3);
+ $('mdTit').textContent='Investigar — Brasil · '+e.t;
+ $('mdBody').innerHTML=`<div class="note" style="margin:0 0 10px;font-size:13px;color:var(--tx)">Alerta gerado pela versão anterior (sem os dados anexados). Abaixo, todas as gerações do arquivo do Brasil registradas nos 6 min ao redor, com o que cada uma mudou:</div>`+
+  (rows.length?rows.map(r=>vered(r.dL||0,r.dF||0)+`<table class="cmp" style="margin-bottom:10px"><tr><th>geração</th><th>hora TSE</th><th>seções</th><th>Lula</th><th>Flávio</th><th>Δ Lula</th><th>Δ Flávio</th><th>Δ seções</th></tr><tr><td class="mono">${r.idg}</td><td class="mono">${r.hg}</td><td class="mono">${fmt(r.st)}</td><td class="mono">${fmt(r.L)}</td><td class="mono">${fmt(r.F)}</td><td class="mono ${r.dL<0?'neg':'pos'}">${r.dL==null?'—':(r.dL>0?'+':'')+fmt(r.dL)}</td><td class="mono ${r.dF<0?'neg':'pos'}">${r.dF==null?'—':(r.dF>0?'+':'')+fmt(r.dF)}</td><td class="mono ${r.dst<0?'neg':''}">${r.dst==null?'—':(r.dst>0?'+':'')+fmt(r.dst)}</td></tr></table>`).join(''):'<div class="empty">Este aparelho não tem leituras guardadas desse horário (o log começou na versão nova). Os alertas novos já vêm com os dados anexados.</div>');
+ $('modal').classList.add('on');
+}
 function investigar(id){
- const e=S.anom.find(a=>a.id===id);if(!e||!e.dados)return;const D=e.dados,a=D.prev,b=D.cur;
+ const e=S.anom.find(a=>a.id===id);if(!e)return;if(!e.dados)return investigarAntigo(e);const D=e.dados,a=D.prev,b=D.cur;
  const dL=b.L-a.L,dF=b.F-a.F,dst=b.st-a.st,dvb=b.vb-a.vb,dvn=b.vn-a.vn;
  const replica=(+b.idg)<(+a.idg);
  let veredito='';
@@ -597,7 +629,7 @@ function investigar(id){
  if(D.abr==='br'){const ta=new Date(e.ts).getTime();const alt=[];for(const u of UFS){const rows=S.log.filter(x=>x.abr===u&&new Date(x.t).getTime()>=ta-180e3&&new Date(x.t).getTime()<=ta+180e3);for(const r of rows){if((r.dL||0)<0||(r.dF||0)<0||(r.dst||0)<0)alt.push(`<tr><td>${UF_NOME[u]}</td><td class="mono">${r.idg}</td><td class="mono ${r.dL<0?'neg':''}">${r.dL>0?'+':''}${fmt(r.dL)}</td><td class="mono ${r.dF<0?'neg':''}">${r.dF>0?'+':''}${fmt(r.dF)}</td><td class="mono ${r.dst<0?'neg':''}">${r.dst>0?'+':''}${fmt(r.dst)}</td></tr>`);}}
   ufs=`<h3 style="margin-top:12px">Estados com queda de votos/seções nos 3 min ao redor (${alt.length})</h3>`+(alt.length?`<table class="cmp"><tr><th>UF</th><th>geração</th><th>Δ Lula</th><th>Δ Flávio</th><th>Δ seções</th></tr>${alt.join('')}</table>`:'<div class="empty">Nenhum estado registrou queda nesse intervalo (ou as leituras de UF ainda não cobriram o período).</div>');}
  $('mdTit').textContent='Investigar — '+D.nome+' · '+e.t;
- $('mdBody').innerHTML=`<div class="note" style="margin:0 0 10px;font-size:13px;color:var(--tx)">${veredito}</div>
+ $('mdBody').innerHTML=(replica?'':vered(dL,dF))+`<div class="note" style="margin:0 0 10px;font-size:13px;color:var(--tx)">${veredito}</div>
  <table class="cmp"><tr><th></th><th>antes</th><th>depois</th><th>Δ</th></tr>
  ${linha('Geração do arquivo (idg)',+a.idg,+b.idg,x=>String(x))}<tr><td>Hora do TSE</td><td class="mono">${a.hg}</td><td class="mono">${b.hg}</td><td></td></tr>
  ${linha('Seções apuradas',a.st,b.st)}${linha('Lula (13)',a.L,b.L)}${linha('Flávio (22)',a.F,b.F)}${linha('Brancos',a.vb,b.vb)}${linha('Nulos',a.vn,b.vn)}${linha('Total de votos',a.tv,b.tv)}${linha('Comparecimento',a.c,b.c)}
@@ -609,8 +641,8 @@ function investigar(id){
 setInterval(()=>{$('logInfo').textContent=`${S.log.length} leituras guardadas · ${S.stale} réplicas atrasadas descartadas`;},2000);
 // ---------- início ----------
 renderMapa();renderFeeds();renderTL();
-cicloBR();cicloUF();cicloMS();cicloGov();cicloExt();
-setInterval(cicloBR,3000);setInterval(cicloUF,3000);setInterval(cicloMS,30000);setInterval(cicloGov,30000);setInterval(cicloExt,15000);setInterval(tick,1000);
+cicloBR();cicloUF();cicloMS();cicloGov();cicloExt();cicloProj();
+setInterval(cicloBR,3000);setInterval(cicloUF,3000);setInterval(cicloMS,30000);setInterval(cicloGov,30000);setInterval(cicloExt,15000);setInterval(cicloProj,20000);setInterval(tick,1000);
 if(ONPAGES)evento('info','Esta cópia (GitHub Pages) lê os dados pelo repassador de acontabrasil.com.br.','feed');
 })();
 </script>
