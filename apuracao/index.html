@@ -137,6 +137,7 @@ footer b{color:var(--tx)}
   <div class="sp"></div>
   <nav class="tabs">
    <button class="on" data-sec="pres">Presidente</button>
+   <button data-sec="ext">🌎 Exterior (BUs)</button>
    <button data-sec="gov">Governadores</button>
    <button data-sec="ms">MS e Bela Vista</button>
    <a href="../radar/" style="padding:6px 11px;font-size:13px;color:var(--mut)">Radar das pesquisas</a>
@@ -179,6 +180,13 @@ footer b{color:var(--tx)}
      <div class="kv"><span>Pesquisas (radar, 24/10)</span><span class="mono" id="pesq">—</span></div>
      <div class="kv"><span>1º turno, só entre os dois</span><span class="mono">Flávio 51,0% · Lula 49,0%</span></div>
      <div class="note" id="projNota">Método: para cada estado, o resultado esperado mistura o que já foi apurado nele com a base do 1º turno ajustada pela virada média observada nos estados já apurados; soma ponderada pelos votos válidos de cada estado. Faixa alarga quando poucas seções foram apuradas.</div>
+    </div>
+    <div class="card" id="extCard">
+     <h3>Exterior — boletins de urna já recebidos</h3>
+     <div class="row" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="background:var(--card2);border-radius:8px;padding:8px"><small style="color:var(--mut);font-size:11px">Lula</small><b class="mono" style="display:block;font-size:22px;color:var(--l2)" id="exL">—</b><small class="mono" id="exLp" style="color:var(--mut)"></small></div><div style="background:var(--card2);border-radius:8px;padding:8px"><small style="color:var(--mut);font-size:11px">Flávio</small><b class="mono" style="display:block;font-size:22px;color:var(--f2)" id="exF">—</b><small class="mono" id="exFp" style="color:var(--mut)"></small></div></div>
+     <div class="kv"><span>Seções recebidas</span><span class="mono" id="exSec">—</span></div>
+     <div class="kv"><span>1º turno, nas mesmas cidades</span><span class="mono" id="exR1">—</span></div>
+     <div class="note">Soma dos BUs (arquivo oficial de cada urna) das seções do exterior que o TSE já recebeu. Não é totalização: a oficial do exterior sai a partir das 17h. <a href="#" data-goto="ext">Ver cidade por cidade →</a></div>
     </div>
     <div class="card">
      <h3>Por região</h3>
@@ -228,6 +236,18 @@ footer b{color:var(--tx)}
      <h3>Estados — ordenado por apuração</h3>
      <div class="lst" id="ufs"></div>
     </div>
+   </div>
+  </div>
+ </section>
+
+ <!-- EXTERIOR -->
+ <section class="sec" id="sec-ext">
+  <div class="grid" style="grid-template-columns:1fr">
+   <div class="card">
+    <h3>Exterior — boletim de urna por cidade <span style="color:var(--dim);text-transform:none;letter-spacing:0">(seções já recebidas pelo TSE; a totalização oficial do exterior sai a partir das 17h)</span></h3>
+    <div class="note" style="margin-bottom:10px" id="extNota">Carregando…</div>
+    <div style="overflow:auto"><table class="gov" id="extTab"></table></div>
+    <div class="note">Fonte: TSE, arquivos de urna do pleito 3221 (<span class="mono">arquivo-urna/3221/dados/zz/…-bu.dat</span>), decodificados por este site; 1º turno das mesmas cidades pela totalização oficial (eleição 6257). Cidades sem nenhuma seção recebida não aparecem. Atualiza a cada 15 s.</div>
    </div>
   </div>
  </section>
@@ -513,10 +533,23 @@ document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',
 document.querySelectorAll('.mapmode button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.mapmode button').forEach(x=>x.classList.toggle('on',x===b));S.mode=b.dataset.mode;renderMapa();}));
 fetch('../radar/radar.json').then(r=>r.json()).then(j=>{S.pesq=j;$('pesq').textContent=`Flávio ${pc(j.esperado,1)} · faixa ${pc(j.ic90[0],1)}–${pc(j.ic90[1],1)}`;}).catch(()=>{});
 
+async function cicloExt(){
+ try{const j=await (await fetch((ONPAGES?'https://acontabrasil-seven.vercel.app':'')+'/api/exterior',{cache:'no-store'})).json(); if(j.erro)throw new Error(j.erro); S.ext=j; renderExt();}catch(e){ $('extNota').textContent='Sem leitura do exterior no momento ('+e.message+').'; }
+}
+function renderExt(){
+ const j=S.ext;if(!j)return;const t=j.totais;const T=t.L+t.F;
+ $('exL').textContent=fmt(t.L);$('exF').textContent=fmt(t.F);$('exLp').textContent=T?pc(t.L/T*100,1):'';$('exFp').textContent=T?pc(t.F/T*100,1):'';
+ $('exSec').textContent=`${fmt(t.recebidas)} de ${fmt(t.secoes)} · ${t.cidades} de ${t.cidades_total} cidades`;
+ const R=t.r1.L+t.r1.F;$('exR1').textContent=R?`Lula ${fmt(t.r1.L)} (${pc(t.r1.L/R*100,1)}) · Flávio ${fmt(t.r1.F)} (${pc(t.r1.F/R*100,1)})`:'—';
+ $('extNota').innerHTML=`<b>${fmt(t.recebidas)}</b> seções recebidas de ${fmt(t.secoes)} (${t.cidades} cidades) · Lula <b class="mono" style="color:var(--l2)">${fmt(t.L)}</b> × Flávio <b class="mono" style="color:var(--f2)">${fmt(t.F)}</b> · brancos ${fmt(t.b)} · nulos ${fmt(t.n)} · comparecimento ${t.a?pc(t.c/t.a*100,1):'—'} · lido ${new Date(j.gerado).toLocaleTimeString('pt-BR',{timeZone:'America/Sao_Paulo'})}`;
+ $('extTab').innerHTML='<tr><th>Cidade</th><th class="n">Seções</th><th class="n">Lula</th><th class="n">Flávio</th><th class="n">% F (entre os dois)</th><th class="n">1º turno % F</th><th class="n">Comp.</th></tr>'+j.cidades.map(c=>{const T=c.L+c.F;const R=c.r1?c.r1.L+c.r1.F:0;return `<tr><td><b>${c.nm}</b></td><td class="n mono">${c.recebidas}/${c.secoes}</td><td class="n mono" style="color:var(--l2)">${fmt(c.L)}</td><td class="n mono" style="color:var(--f2)">${fmt(c.F)}</td><td class="n mono">${T?pc(c.F/T*100,1):'—'}</td><td class="n mono" style="color:var(--mut)">${R?pc(c.r1.F/R*100,1):'—'}</td><td class="n mono" style="color:var(--mut)">${c.a?pc(c.c/c.a*100,0):'—'}</td></tr>`;}).join('');
+}
+document.querySelectorAll('[data-goto]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();document.querySelector('.tabs button[data-sec="'+a.dataset.goto+'"]').click();window.scrollTo(0,0);}));
+
 // ---------- início ----------
 renderMapa();renderFeeds();renderTL();
-cicloBR();cicloUF();cicloMS();cicloGov();
-setInterval(cicloBR,3000);setInterval(cicloUF,3000);setInterval(cicloMS,30000);setInterval(cicloGov,30000);setInterval(tick,1000);
+cicloBR();cicloUF();cicloMS();cicloGov();cicloExt();
+setInterval(cicloBR,3000);setInterval(cicloUF,3000);setInterval(cicloMS,30000);setInterval(cicloGov,30000);setInterval(cicloExt,15000);setInterval(tick,1000);
 if(ONPAGES)evento('info','Esta cópia (GitHub Pages) lê os dados pelo repassador de acontabrasil.com.br.','feed');
 })();
 </script>

@@ -1,1 +1,1 @@
-{ "cleanUrls": true }
+{ "cleanUrls": true, "functions": { "api/exterior.js": { "maxDuration": 30 } } }
