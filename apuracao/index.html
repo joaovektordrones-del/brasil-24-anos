@@ -123,6 +123,10 @@ table.gov td,table.gov th{padding:5px 4px;border-bottom:1px dashed var(--line);t
 table.gov th{color:var(--mut);font-weight:600;font-size:11px}
 table.gov td.n{text-align:right}
 .sec{display:none}.sec.on{display:block}
+.bt{font:inherit;font-size:12px;background:var(--card2);color:var(--tx);border:1px solid var(--line);border-radius:6px;padding:4px 10px;cursor:pointer}.bt:hover{border-color:var(--amb)}
+.ev.clk{cursor:pointer}.ev.clk:hover{outline:1px solid var(--amb)}
+.modal{display:none;position:fixed;inset:0;background:#000a;z-index:50;padding:16px;overflow:auto}.modal.on{display:block}.modal .box{max-width:900px;margin:20px auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+table.cmp{width:100%;border-collapse:collapse;font-size:12px}table.cmp td,table.cmp th{padding:4px 6px;border-bottom:1px dashed var(--line);text-align:right}table.cmp td:first-child,table.cmp th:first-child{text-align:left;color:var(--mut)}table.cmp .neg{color:var(--red);font-weight:700}table.cmp .pos{color:var(--ok)}
 footer{border-top:1px solid var(--line);padding:18px 0 40px;font-size:12px;color:var(--mut);line-height:1.6}
 footer b{color:var(--tx)}
 .cta{display:inline-block;margin-top:6px;background:var(--amb);color:#000;font-weight:700;padding:6px 10px;border-radius:8px;font-size:12px}
@@ -194,7 +198,7 @@ footer b{color:var(--tx)}
     </div>
     <div class="card tl">
      <h3>Ao longo da apuração</h3>
-     <svg id="tlSvg" viewBox="0 0 300 140" preserveAspectRatio="none"></svg>
+     <svg id="tlSvg" viewBox="0 0 300 140" preserveAspectRatio="xMidYMid meet"></svg>
      <div class="legend"><span><i style="background:var(--l)"></i>Lula</span><span><i style="background:var(--f)"></i>Flávio</span><span>eixo: % de seções apuradas</span></div>
     </div>
    </div>
@@ -226,6 +230,7 @@ footer b{color:var(--tx)}
    <div class="col-right">
     <div class="card">
      <h3>Sinais de anomalia <span style="color:var(--dim);text-transform:none;letter-spacing:0">(para conferir, não é acusação)</span></h3>
+     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"><button class="bt" id="btCsvLog">⬇ Planilha de leituras (CSV)</button><button class="bt" id="btCsvAnom">⬇ Planilha de anomalias (CSV)</button><span class="note" style="margin:0;align-self:center" id="logInfo"></span></div>
      <div class="feed" id="anom"><div class="empty">Nenhum sinal até agora.</div></div>
     </div>
     <div class="card">
@@ -291,6 +296,7 @@ footer b{color:var(--tx)}
  </section>
 </main>
 
+<div class="modal" id="modal"><div class="box"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><b id="mdTit">Investigar</b><button class="bt" id="mdX">fechar ✕</button></div><div id="mdBody"></div></div></div>
 <footer><div class="wrap">
  <b>Como funciona.</b> O TSE publica, durante a totalização, arquivos JSON por abrangência (Brasil, estado, município). Este site lê esses arquivos a cada poucos segundos através de um repassador próprio com cache de 3 segundos, e mostra os números sem alterar nada: votos, percentuais e seções apuradas são os do TSE. Horário "TSE gerou" é o carimbo do próprio arquivo (Brasília).<br>
  <b>Projeção</b> é cálculo deste site, não do TSE: usa o 1º turno de cada estado como base, mede a virada média nos estados já apurados e combina com o que cada estado já contou; a faixa de 90% considera o erro típico de apurações parciais. <b>Sinais de anomalia</b> são regras simples (voto que diminui, salto brusco de percentual, apuração parada, brancos/nulos ou abstenção muito fora do 1º turno) que marcam o que vale conferir na fonte — não afirmam fraude nem erro.<br>
@@ -316,7 +322,8 @@ if(DEMO)$('demo').style.display='block';
 $('avisoHora').textContent='Urnas fecham às 17h de Brasília; os arquivos do TSE começam a mudar a partir daí.';
 
 // ---------- estado ----------
-const S={br:null,uf:{},prev:{},hist:[],anom:[],feed:[],lastIdg:null,lastChange:Date.now(),mode:'lider',sel:null,pesq:null,bv:null,gov:{}};
+const S={br:null,uf:{},prev:{},hist:[],anom:[],feed:[],lastIdg:null,lastChange:Date.now(),mode:'lider',sel:null,pesq:null,bv:null,gov:{},log:[],maxIdg:{},stale:0};
+try{const l=JSON.parse(localStorage.getItem('acb_log_'+ELE)||'[]');if(Array.isArray(l))S.log=l;}catch(e){}
 try{const h=JSON.parse(localStorage.getItem('acb_hist_'+ELE)||'[]');if(Array.isArray(h))S.hist=h;}catch(e){}
 try{const a=JSON.parse(localStorage.getItem('acb_anom_'+ELE)||'[]');if(Array.isArray(a))S.anom=a;}catch(e){}
 
@@ -363,16 +370,38 @@ function projetar(){
 }
 
 // ---------- anomalias ----------
-function evento(tipo,txt,lista){
- const e={t:hhmm(now()),tipo,txt,ts:Date.now()};
+const snap=d=>({idg:d.idg,hg:d.hg,pst:d.pst,st:d.st,ts:d.ts,L:d.L,F:d.F,vb:d.vb,vn:d.vn,tv:d.tv,c:d.c,a:d.a,pf:d.pf,pl:d.pl});
+function registrar(abr,d){
+ // guarda toda geração nova do arquivo do TSE (uma linha por idg) — base da planilha
+ const last=S.log.filter(x=>x.abr===abr).slice(-1)[0];
+ if(last&&last.idg===d.idg)return false;
+ S.log.push({t:new Date().toISOString(),abr,idg:d.idg,hg:d.hg,pst:+d.pst.toFixed(3),st:d.st,ts:d.ts,L:d.L,F:d.F,vb:d.vb,vn:d.vn,tv:d.tv,c:d.c,a:d.a,
+  dL:last?d.L-last.L:null,dF:last?d.F-last.F:null,dst:last?d.st-last.st:null});
+ if(S.log.length>6000)S.log=S.log.slice(-6000);
+ try{localStorage.setItem('acb_log_'+ELE,JSON.stringify(S.log));}catch(e){}
+ return true;
+}
+function stale(abr,d){
+ // réplica atrasada: o TSE serve o arquivo por vários servidores; às vezes volta uma geração mais antiga
+ const n=+d.idg||0, m=S.maxIdg[abr]||0;
+ if(n&&n<m){S.stale++;return true;}
+ if(n>m)S.maxIdg[abr]=n;
+ return false;
+}
+function evento(tipo,txt,lista,dados){
+ const e={t:hhmm(now()),tipo,txt,ts:Date.now(),dados:dados||null,id:Date.now().toString(36)+Math.random().toString(36).slice(2,6)};
  if(lista==='anom'){ if(S.anom.some(a=>a.txt===txt))return; S.anom.unshift(e); S.anom=S.anom.slice(0,80); localStorage.setItem('acb_anom_'+ELE,JSON.stringify(S.anom)); }
  else { if(S.feed[0]&&S.feed[0].txt===txt)return; S.feed.unshift(e); S.feed=S.feed.slice(0,60); }
  renderFeeds();
 }
 function checarAnomalias(k,cur,prev,nome){
  if(!prev||!cur||!cur.T)return;
- if(cur.F<prev.F||cur.L<prev.L) evento('alerta',`${nome}: total de votos de um candidato DIMINUIU entre duas leituras (Lula ${fmt(prev.L)}→${fmt(cur.L)}; Flávio ${fmt(prev.F)}→${fmt(cur.F)}). Pode ser correção do TSE — conferir na fonte.`,'anom');
- if(cur.pst<prev.pst-0.01) evento('sinal',`${nome}: % de seções apuradas recuou (${pc(prev.pst)} → ${pc(cur.pst)}).`,'anom');
+ const D={abr:k,nome,prev:snap(prev),cur:snap(cur)};
+ const dL=cur.L-prev.L,dF=cur.F-prev.F;
+ if(dL<0||dF<0){
+  const troca=(dL<0&&dF>0)||(dF<0&&dL>0);
+  evento('alerta',`${nome}: total de votos de um candidato DIMINUIU entre duas gerações do TSE (Lula ${fmt(prev.L)}→${fmt(cur.L)} [${dL>=0?'+':''}${fmt(dL)}]; Flávio ${fmt(prev.F)}→${fmt(cur.F)} [${dF>=0?'+':''}${fmt(dF)}])${troca?' — UM CAIU E O OUTRO SUBIU: conferir troca de dono':''}. Geração ${prev.idg}→${cur.idg}. Toque para investigar.`,'anom',D);}
+ if(cur.pst<prev.pst-0.01) evento('sinal',`${nome}: % de seções apuradas recuou (${pc(prev.pst)} → ${pc(cur.pst)}), geração ${prev.idg}→${cur.idg}. Toque para investigar.`,'anom',D);
  if(prev.pst>=20&&cur.pst>prev.pst&&Math.abs(cur.pf-prev.pf)>=4) evento('sinal',`${nome}: salto de ${pc(Math.abs(cur.pf-prev.pf),1)} na parcela de Flávio entre leituras (${pc(prev.pf,1)} → ${pc(cur.pf,1)}) com ${pc(cur.pst,1)} apurado.`,'anom');
  const r=R1[k==='bv'?'ms':k]; if(r&&cur.pst>=30){
   const bn1=(r[3]+r[4])/r[1]*100, bn=(cur.vb+cur.vn)/Math.max(1,cur.tv)*100;
@@ -386,7 +415,9 @@ let okCount=0, errCount=0, lastRead=null;
 async function cicloBR(){
  try{
   const j=await ler(`${ELE}/dados/br/br-c0001-e00${ELE}-u.json`);
-  const cur=parse(j); const prev=S.br; S.br=cur; lastRead=Date.now(); okCount++; errCount=0;
+  const cur=parse(j); lastRead=Date.now(); okCount++; errCount=0;
+  if(stale('br',cur)){ if(S.stale%20===1)evento('info',`Leitura descartada: o TSE devolveu uma geração mais antiga do arquivo do Brasil (${cur.idg} < ${S.maxIdg.br}) — réplica atrasada, não é mudança de votos. Já aconteceu ${S.stale}×.`,'feed'); return; }
+  const prev=S.br; S.br=cur; registrar('br',cur);
   setLive(cur.tf?'off':'on', cur.tf?'totalização encerrada (TSE)':'ao vivo · TSE '+(cur.hg||'—'));
   if(cur.idg!==S.lastIdg){S.lastIdg=cur.idg;S.lastChange=Date.now();
    if(cur.T>0){S.hist.push({t:Date.now(),pst:+cur.pst.toFixed(2),f:+cur.pf.toFixed(2),l:+cur.pl.toFixed(2)});S.hist=S.hist.slice(-2000);localStorage.setItem('acb_hist_'+ELE,JSON.stringify(S.hist));}
@@ -405,7 +436,7 @@ async function cicloUF(){
  // 4 UFs por rodada (a cada 3 s) → todas em ~21 s
  const lote=[];for(let i=0;i<4;i++){lote.push(UFS[ufIdx%UFS.length]);ufIdx++;}
  await Promise.all(lote.map(async u=>{
-  try{const j=await ler(`${ELE}/dados/${u}/${u}-c0001-e00${ELE}-u.json`);const cur=parse(j);const prev=S.uf[u];S.uf[u]=cur;
+  try{const j=await ler(`${ELE}/dados/${u}/${u}-c0001-e00${ELE}-u.json`);const cur=parse(j);if(stale(u,cur))return;const prev=S.uf[u];S.uf[u]=cur;registrar(u,cur);
    checarAnomalias(u,cur,prev,UF_NOME[u]);
    if(prev&&cur.T>0&&prev.pst<95&&cur.pst>=95) evento('marco',`${UF_NOME[u]}: 95% apurado — ${cur.pf>50?'Flávio':'Lula'} lidera com ${pc(Math.max(cur.pf,cur.pl),1)}.`,'feed');
    if(prev&&prev.T>0&&cur.T>0&&(prev.pf>50)!==(cur.pf>50)&&cur.pst>=30) evento('marco',`${UF_NOME[u]}: ${cur.pf>50?'Flávio':'Lula'} assume a liderança (${pc(cur.pst,1)} apurado).`,'feed');
@@ -498,14 +529,15 @@ function renderProj(){
 function renderTL(){
  const svg=$('tlSvg');const h=S.hist;if(h.length<2){svg.innerHTML='<text x="150" y="75" text-anchor="middle" class="lab">sem pontos ainda</text>';return;}
  const X=p=>8+p/100*284, Y=v=>130-(Math.max(35,Math.min(65,v))-35)/30*120;
- let s='';for(const g of [40,45,50,55,60]){s+=`<line x1="8" x2="292" y1="${Y(g)}" y2="${Y(g)}" stroke="${g===50?'#ffffff55':'#ffffff14'}" stroke-width="1"/><text x="294" y="${Y(g)+3}" class="lab">${g}</text>`;}
+ let s='';for(const g of [40,45,50,55,60]){s+=`<line x1="8" x2="292" y1="${Y(g)}" y2="${Y(g)}" stroke="${g===50?'#ffffff55':'#ffffff14'}" stroke-width="1"/><text x="290" y="${Y(g)-2}" class="lab" text-anchor="end">${g}%</text>`;}
  const path=(k,c)=>`<polyline fill="none" stroke="${c}" stroke-width="2" points="${h.map(p=>X(p.pst).toFixed(1)+','+Y(p[k]).toFixed(1)).join(' ')}"/>`;
  s+=path('l','#e0362c')+path('f','#2f6fe0');
  for(const g of [0,25,50,75,100])s+=`<text x="${X(g)}" y="139" class="lab" text-anchor="middle">${g}%</text>`;
  svg.innerHTML=s;
 }
 function renderFeeds(){
- $('anom').innerHTML=S.anom.length?S.anom.map(e=>`<div class="ev ${e.tipo}"><span class="t mono">${e.t}</span>${e.txt}</div>`).join(''):'<div class="empty">Nenhum sinal até agora.</div>';
+ $('anom').innerHTML=S.anom.length?S.anom.map(e=>`<div class="ev ${e.tipo}${e.dados?' clk':''}" data-id="${e.id||''}"><span class="t mono">${e.t}</span>${e.txt}</div>`).join(''):'<div class="empty">Nenhum sinal até agora.</div>';
+ $('anom').querySelectorAll('.ev.clk').forEach(el=>el.addEventListener('click',()=>investigar(el.dataset.id)));
  $('feed').innerHTML=S.feed.length?S.feed.map(e=>`<div class="ev ${e.tipo}"><span class="t mono">${e.t}</span>${e.txt}</div>`).join(''):'<div class="empty">Aguardando a primeira leitura.</div>';
 }
 function renderMS(){
@@ -546,6 +578,35 @@ function renderExt(){
 }
 document.querySelectorAll('[data-goto]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();document.querySelector('.tabs button[data-sec="'+a.dataset.goto+'"]').click();window.scrollTo(0,0);}));
 
+function csv(rows,cols){const esc=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';return '\ufeff'+cols.join(';')+'\n'+rows.map(r=>cols.map(c=>esc(r[c])).join(';')).join('\n');}
+function baixar(nome,txt){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/csv;charset=utf-8'}));a.download=nome;a.click();}
+$('btCsvLog').addEventListener('click',()=>baixar('leituras_tse_'+ELE+'.csv',csv(S.log,['t','abr','idg','hg','pst','st','ts','L','F','dL','dF','dst','vb','vn','tv','c','a'])));
+$('btCsvAnom').addEventListener('click',()=>baixar('anomalias_'+ELE+'.csv',csv(S.anom.map(e=>({hora:e.t,tipo:e.tipo,texto:e.txt,abr:e.dados?e.dados.abr:'',idg_antes:e.dados?e.dados.prev.idg:'',idg_depois:e.dados?e.dados.cur.idg:'',L_antes:e.dados?e.dados.prev.L:'',L_depois:e.dados?e.dados.cur.L:'',F_antes:e.dados?e.dados.prev.F:'',F_depois:e.dados?e.dados.cur.F:'',secoes_antes:e.dados?e.dados.prev.st:'',secoes_depois:e.dados?e.dados.cur.st:''})),['hora','tipo','abr','idg_antes','idg_depois','L_antes','L_depois','F_antes','F_depois','secoes_antes','secoes_depois','texto'])));
+$('mdX').addEventListener('click',()=>$('modal').classList.remove('on'));$('modal').addEventListener('click',e=>{if(e.target.id==='modal')$('modal').classList.remove('on');});
+function investigar(id){
+ const e=S.anom.find(a=>a.id===id);if(!e||!e.dados)return;const D=e.dados,a=D.prev,b=D.cur;
+ const dL=b.L-a.L,dF=b.F-a.F,dst=b.st-a.st,dvb=b.vb-a.vb,dvn=b.vn-a.vn;
+ const replica=(+b.idg)<(+a.idg);
+ let veredito='';
+ if(replica)veredito='<b style="color:var(--amb)">Réplica atrasada do TSE:</b> a geração "depois" é MENOR que a "antes" — o servidor devolveu um arquivo mais antigo. Não é movimentação de votos. (Leituras assim já são descartadas automaticamente desde esta versão.)';
+ else if(dL<0&&dF<0&&dst<=0)veredito='<b style="color:var(--amb)">Os dois caíram junto com as seções</b> — padrão de retotalização/correção de seções pelo TSE (seção retirada e reapurada), não de troca entre candidatos. Confirmar se nas gerações seguintes os totais voltam a subir acima do nível anterior.';
+ else if((dL<0&&dF>0)||(dF<0&&dL>0))veredito='<b style="color:var(--red)">Um candidato caiu enquanto o outro subiu</b> entre duas gerações crescentes do arquivo. Isso merece conferência: veja abaixo quais estados mudaram no mesmo intervalo e compare com os BUs das seções envolvidas no site do TSE.';
+ else veredito='Um candidato caiu sem que o outro subisse. Possível retirada de seção para reapuração; acompanhar as próximas gerações.';
+ const linha=(n,x,y,f=fmt)=>{const d=y-x;return `<tr><td>${n}</td><td class="mono">${f(x)}</td><td class="mono">${f(y)}</td><td class="mono ${d<0?'neg':d>0?'pos':''}">${d>0?'+':''}${f(d)}</td></tr>`;};
+ let ufs='';
+ if(D.abr==='br'){const ta=new Date(e.ts).getTime();const alt=[];for(const u of UFS){const rows=S.log.filter(x=>x.abr===u&&new Date(x.t).getTime()>=ta-180e3&&new Date(x.t).getTime()<=ta+180e3);for(const r of rows){if((r.dL||0)<0||(r.dF||0)<0||(r.dst||0)<0)alt.push(`<tr><td>${UF_NOME[u]}</td><td class="mono">${r.idg}</td><td class="mono ${r.dL<0?'neg':''}">${r.dL>0?'+':''}${fmt(r.dL)}</td><td class="mono ${r.dF<0?'neg':''}">${r.dF>0?'+':''}${fmt(r.dF)}</td><td class="mono ${r.dst<0?'neg':''}">${r.dst>0?'+':''}${fmt(r.dst)}</td></tr>`);}}
+  ufs=`<h3 style="margin-top:12px">Estados com queda de votos/seções nos 3 min ao redor (${alt.length})</h3>`+(alt.length?`<table class="cmp"><tr><th>UF</th><th>geração</th><th>Δ Lula</th><th>Δ Flávio</th><th>Δ seções</th></tr>${alt.join('')}</table>`:'<div class="empty">Nenhum estado registrou queda nesse intervalo (ou as leituras de UF ainda não cobriram o período).</div>');}
+ $('mdTit').textContent='Investigar — '+D.nome+' · '+e.t;
+ $('mdBody').innerHTML=`<div class="note" style="margin:0 0 10px;font-size:13px;color:var(--tx)">${veredito}</div>
+ <table class="cmp"><tr><th></th><th>antes</th><th>depois</th><th>Δ</th></tr>
+ ${linha('Geração do arquivo (idg)',+a.idg,+b.idg,x=>String(x))}<tr><td>Hora do TSE</td><td class="mono">${a.hg}</td><td class="mono">${b.hg}</td><td></td></tr>
+ ${linha('Seções apuradas',a.st,b.st)}${linha('Lula (13)',a.L,b.L)}${linha('Flávio (22)',a.F,b.F)}${linha('Brancos',a.vb,b.vb)}${linha('Nulos',a.vn,b.vn)}${linha('Total de votos',a.tv,b.tv)}${linha('Comparecimento',a.c,b.c)}
+ <tr><td>% Flávio (entre os dois)</td><td class="mono">${pc(a.pf,2)}</td><td class="mono">${pc(b.pf,2)}</td><td class="mono">${(b.pf-a.pf)>0?'+':''}${(b.pf-a.pf).toFixed(2).replace('.',',')}</td></tr></table>
+ ${ufs}
+ <div class="note">Fonte para conferir: <a href="https://resultados.tse.jus.br/oficial/ele2026/${ELE}/dados/${D.abr}/${D.abr}-c0001-e00${ELE}-u.json" target="_blank" rel="noopener" class="mono">arquivo oficial ${D.abr}</a> · <a href="https://resultados.tse.jus.br/oficial/app/index.html#/eleicao/resultados" target="_blank" rel="noopener">app do TSE</a>. Baixe a planilha de leituras para ver todas as gerações.</div>`;
+ $('modal').classList.add('on');
+}
+setInterval(()=>{$('logInfo').textContent=`${S.log.length} leituras guardadas · ${S.stale} réplicas atrasadas descartadas`;},2000);
 // ---------- início ----------
 renderMapa();renderFeeds();renderTL();
 cicloBR();cicloUF();cicloMS();cicloGov();cicloExt();
