@@ -9,7 +9,8 @@ const UA = { headers: { 'User-Agent': 'acontabrasil.com.br (leitura publica TSE)
 const UFS = 'ac al am ap ba ce df es go ma mg ms mt pa pb pe pi pr rj rn ro rr rs sc se sp to zz'.split(' ');
 const C = global.__acbProj || (global.__acbProj = { cfg: null, r1: {}, carregando: null, erro: {} });
 
-async function j(p) { const r = await fetch(ORIGEM + p, UA); if (!r.ok) throw new Error(r.status + ' ' + p); return r.json(); }
+const dorme = ms => new Promise(r => setTimeout(r, ms));
+async function j(p, tent = 0) { const r = await fetch(ORIGEM + p, UA); if (r.status === 429 && tent < 3) { await dorme(800 * (tent + 1)); return j(p, tent + 1); } if (!r.ok) throw new Error(r.status + ' ' + p); return r.json(); }
 function cand(x) { const c = x.carg[0].agr.flatMap(a => a.par.flatMap(p => p.cand)); const f = c.find(z => z.n === '22'), l = c.find(z => z.n === '13'); return { F: +(f && f.vap) || 0, L: +(l && l.vap) || 0 }; }
 async function pool(items, n, fn) { let i = 0; const out = []; await Promise.all(Array.from({ length: n }, async () => { while (i < items.length) { const k = i++; try { out[k] = await fn(items[k]); } catch (e) { out[k] = null; } } })); return out; }
 
@@ -20,9 +21,9 @@ async function carregarR1(limiteMs) {
     if (C.r1[uf]) continue;
     if (Date.now() - t0 > limiteMs) break;
     const mus = C.cfg[uf] || [];
-    const res = await pool(mus, 48, async m => { const x = await j(`${ELE1}/dados/${uf}/${uf}${m.cd}-c0001-e00${ELE1}-u.json`); return [m.cd, cand(x)]; });
+    const res = await pool(mus, 8, async m => { const x = await j(`${ELE1}/dados/${uf}/${uf}${m.cd}-c0001-e00${ELE1}-u.json`); return [m.cd, cand(x)]; });
     const map = {}; let falhas = 0; for (const r of res) { if (r) map[r[0]] = r[1]; else falhas++; }
-    if (falhas <= mus.length * 0.05) C.r1[uf] = map; else C.erro[uf] = falhas;
+    if (falhas <= mus.length * 0.05) { C.r1[uf] = map; delete C.erro[uf]; } else C.erro[uf] = falhas;
   }
 }
 const Phi = x => { const t = 1 / (1 + 0.2316419 * Math.abs(x)); const d = 0.3989423 * Math.exp(-x * x / 2); let p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274)))); return x > 0 ? 1 - p : p; };
@@ -31,14 +32,14 @@ module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   try {
-    if (!C.carregando) C.carregando = carregarR1(14000).finally(() => { C.carregando = null; });
+    if (!C.carregando) C.carregando = carregarR1(9000).finally(() => { C.carregando = null; });
     await C.carregando;
     const poll = { f: +(req.query.poll || 51.5), sd: 2.2 }; // média calibrada das pesquisas (radar) e erro histórico
     // leituras atuais: BR, UFs (-u) e composição (-ab)
     const [br, ufsU, ufsAb] = await Promise.all([
       j(`${ELE}/dados/br/br-c0001-e00${ELE}-u.json`),
-      pool(UFS, 28, uf => j(`${ELE}/dados/${uf}/${uf}-c0001-e00${ELE}-u.json`)),
-      pool(UFS, 28, uf => j(`${ELE}/dados/${uf}/${uf}-e00${ELE}-ab.json`)),
+      pool(UFS, 6, uf => j(`${ELE}/dados/${uf}/${uf}-c0001-e00${ELE}-u.json`)),
+      pool(UFS, 6, uf => j(`${ELE}/dados/${uf}/${uf}-e00${ELE}-ab.json`)),
     ]);
     const brC = cand(br); const O_nat = brC.F + brC.L ? brC.F / (brC.F + brC.L) * 100 : null;
     let num = 0, den = 0, Vtot = 0, Vcont = 0, swNum = 0, swDen = 0; const ufs = [];
