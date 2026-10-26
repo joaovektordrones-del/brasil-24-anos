@@ -5,7 +5,7 @@
 const PNCP = 'https://pncp.gov.br/api/consulta/v1/';
 const UA = { headers: { 'User-Agent': 'acontabrasil.com.br (monitor publico)', 'Accept': 'application/json' } };
 const C = global.__acbMon || (global.__acbMon = { cache: new Map(), cnpj: new Map() });
-const ymd = d => d.toISOString().slice(0, 10).replace(/-/g, '');
+const ymd = d => new Date(d.getTime() - 3 * 3600e3).toISOString().slice(0, 10).replace(/-/g, ''); // data de Brasília
 async function pagina(path, params, pg, tam) {
   const u = new URL(PNCP + path); for (const k in params) u.searchParams.set(k, params[k]); u.searchParams.set('pagina', pg); u.searchParams.set('tamanhoPagina', tam);
   const r = await fetch(u, UA); if (r.status === 204) return { data: [], totalRegistros: 0, totalPaginas: 0 }; if (!r.ok) throw new Error('PNCP ' + r.status + ' ' + path); return r.json();
@@ -24,13 +24,13 @@ const meses = (a, b) => (new Date(b) - new Date(a)) / (30.44 * 864e5);
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*'); res.setHeader('Content-Type', 'application/json; charset=utf-8');
   try {
-    const dias = Math.max(1, Math.min(3, +(req.query.dias || 1)));
+    const dias = Math.max(1, Math.min(7, +(req.query.dias || 3)));
     const fim = new Date(); const ini = new Date(fim - (dias - 1) * 864e5);
     const key = ymd(ini) + '-' + ymd(fim); const cached = C.cache.get(key);
     if (cached && Date.now() - cached.t < 10 * 60e3) { res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=900'); return res.end(cached.body); }
     const t0 = Date.now();
     const [ct, d8, d9] = await Promise.all([
-      todas('contratos', { dataInicial: ymd(ini), dataFinal: ymd(fim) }, 500, 24, 4),
+      todas('contratos', { dataInicial: ymd(ini), dataFinal: ymd(fim) }, 500, 30, 5),
       todas('contratacoes/publicacao', { dataInicial: ymd(ini), dataFinal: ymd(fim), codigoModalidadeContratacao: 8 }, 50, 6, 3),
       todas('contratacoes/publicacao', { dataInicial: ymd(ini), dataFinal: ymd(fim), codigoModalidadeContratacao: 9 }, 50, 6, 3),
     ]);
