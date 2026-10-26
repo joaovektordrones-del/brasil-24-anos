@@ -1,0 +1,56 @@
+{
+ "atualizado": "2026-10-25T23:50:00-03:00",
+ "aviso": "Tudo aqui é 'reportado pela imprensa' salvo onde marcado OFICIAL. Nenhum ministro do novo mandato foi anunciado até a última atualização.",
+ "resultado": {"lula": 51.75, "flavio": 48.25, "fonte": "TSE, proclamação 25/10/2026 21h10", "url": "https://resultados.tse.jus.br/"},
+ "cronograma": [
+  {"data": "2026-10-25", "evento": "2º turno; TSE declara Lula eleito às 21h10", "status": "feito", "fonte": "Diário do Pará / Bloomberg Línea", "url": "https://www.bloomberglinea.com.br/brasil/lula-e-reeleito-com-5174-no-segundo-turno-e-chega-ao-quarto-mandato-na-presidencia/"},
+  {"data": "2026-12-03", "evento": "Prazo para justificar ausência no 1º turno", "status": "futuro", "fonte": "Calendário TSE (Poder360)", "url": "https://www.poder360.com.br/poder-eleicoes/eleicoes-de-2026-leia-as-datas-e-regras-do-calendario-eleitoral/"},
+  {"data": "2026-12-18", "evento": "Diplomação dos eleitos pelo TSE", "status": "futuro", "fonte": "Calendário TSE (Poder360)", "url": "https://www.poder360.com.br/poder-eleicoes/eleicoes-de-2026-leia-as-datas-e-regras-do-calendario-eleitoral/"},
+  {"data": "2027-01-05", "evento": "Posse do presidente (EC 111/2021 — não é mais 1º de janeiro)", "status": "futuro", "fonte": "Metrópoles 25/10/2026; SBT News", "url": "https://www.metropoles.com/brasil/lula-conquista-virada-inedita-no-segundo-turno-e-e-reeleito-para-4o-mandato"},
+  {"data": "2027-01-06", "evento": "Posse dos governadores", "status": "futuro", "fonte": "Calendário TSE (Poder360)", "url": "https://www.poder360.com.br/poder-eleicoes/eleicoes-de-2026-leia-as-datas-e-regras-do-calendario-eleitoral/"},
+  {"data": "2027-02-01", "evento": "Nova legislatura; eleição das Mesas da Câmara e do Senado", "status": "futuro", "fonte": "Bloomberg Línea / InfoMoney 25/10/2026", "url": "https://www.infomoney.com.br/politica/lula-reeleito-quais-promessas-da-campanha-ficam-para-o-quarto-mandato/"}
+ ],
+ "pastas": [
+  {"pasta": "Fazenda", "titular": "Dario Durigan (desde 20/03/2026, no lugar de Haddad)", "cotados": [{"nome": "Dario Durigan", "obs": "'entre os nomes com possibilidade de permanecer'", "fonte": "NC News, 22/10/2026", "url": "https://ncnews.com.br/2026/10/22/lula-x-flavio-bolsonaro-ministerios/"}], "status": "reportado"},
+  {"pasta": "Casa Civil", "titular": "Miriam Belchior (abr/2026, no lugar de Rui Costa)", "cotados": [{"nome": "Miriam Belchior", "obs": "continuidade", "fonte": "NC News, 22/10/2026", "url": "https://ncnews.com.br/2026/10/22/lula-x-flavio-bolsonaro-ministerios/"}, {"nome": "Fernando Haddad", "obs": "cenário de aliados petistas (dez/2025); Haddad disputou o governo de SP", "fonte": "Metrópoles/Igor Gadelha, 22/12/2025", "url": "https://www.metropoles.com/colunas/igor-gadelha/petistas-ja-projetam-haddad-na-casa-civil-de-lula-em-caso-de-reeleicao"}], "status": "reportado"},
+  {"pasta": "Planejamento e Orçamento", "titular": "Bruno Moretti (31/03/2026, no lugar de Simone Tebet)", "cotados": [{"nome": "Bruno Moretti", "obs": "'associado à continuidade'", "fonte": "NC News, 22/10/2026", "url": "https://ncnews.com.br/2026/10/22/lula-x-flavio-bolsonaro-ministerios/"}], "status": "reportado"},
+  {"pasta": "Gestão e Inovação", "titular": "Esther Dweck", "cotados": [{"nome": "Esther Dweck", "obs": "'bem posicionada', sem confirmação", "fonte": "NC News, 22/10/2026", "url": "https://ncnews.com.br/2026/10/22/lula-x-flavio-bolsonaro-ministerios/"}], "status": "reportado"},
+  {"pasta": "Relações Institucionais", "titular": "sem titular confirmado (Gleisi Hoffmann saiu para o Senado-PR)", "cotados": [], "status": "sem nome"},
+  {"pasta": "Educação", "titular": "Leonardo Barchini (abr/2026, no lugar de Camilo Santana)", "cotados": [], "status": "sem nome"},
+  {"pasta": "Saúde", "titular": "Alexandre Padilha (desde 25/02/2025)", "cotados": [], "status": "sem nome"},
+  {"pasta": "Justiça e Segurança Pública", "titular": "interino desde a renúncia de Lewandowski (08/01/2026) — nome a confirmar", "cotados": [], "status": "sem nome"},
+  {"pasta": "Defesa", "titular": "José Múcio (desde 2023, sem troca registrada)", "cotados": [], "status": "sem nome"},
+  {"pasta": "Relações Exteriores", "titular": "Mauro Vieira (desde 2023, sem troca registrada)", "cotados": [], "status": "sem nome"},
+  {"pasta": "Desenvolvimento, Indústria e Comércio", "titular": "Márcio Elias Rosa (abr/2026, no lugar de Alckmin)", "cotados": [], "status": "sem nome"},
+  {"pasta": "Agricultura", "titular": "André de Paula (31/03/2026, no lugar de Carlos Fávaro/PSD)", "cotados": [], "status": "sem nome"},
+  {"pasta": "Transportes", "titular": "George Santoro (abr/2026, no lugar de Renan Filho/MDB)", "cotados": [], "status": "sem nome"},
+  {"pasta": "Cidades", "titular": "Antônio Vladimir Moura Lima (abr/2026, no lugar de Jader Filho/MDB)", "cotados": [], "status": "sem nome"},
+  {"pasta": "Portos e Aeroportos", "titular": "Tomé Franca (abr/2026, no lugar de Silvio Costa Filho/Republicanos)", "cotados": [], "status": "sem nome"},
+  {"pasta": "Meio Ambiente", "titular": "João Paulo Capobianco (abr/2026, no lugar de Marina Silva)", "cotados": [], "status": "sem nome"},
+  {"pasta": "Integração e Desenvolvimento Regional", "titular": "Valder Ribeiro de Moura (abr/2026, no lugar de Waldez Góes/PDT)", "cotados": [], "status": "sem nome"},
+  {"pasta": "Minas e Energia", "titular": "titular atual não confirmado nesta pesquisa", "cotados": [], "status": "sem nome"},
+  {"pasta": "Secretaria-Geral", "titular": "Guilherme Boulos (desde 20/10/2025)", "cotados": [], "status": "sem nome"},
+  {"pasta": "Comunicação Social (Secom)", "titular": "Sidônio Palmeira (desde 07/01/2025)", "cotados": [], "status": "sem nome"},
+  {"pasta": "Banco Central", "titular": "Gabriel Galípolo (mandato fixo; não é cargo de livre nomeação em jan/2027)", "cotados": [], "status": "mandato fixo"},
+  {"pasta": "Petrobras / BNDES", "titular": "não cobertos pela imprensa de 2026 até agora", "cotados": [], "status": "sem nome"}
+ ],
+ "coalizao": {
+  "lula_1t": ["PT", "PCdoB", "PV", "PSOL", "Rede", "PSB", "PDT"],
+  "lula_2t_adesoes": ["PSTU", "PCB", "UP"],
+  "flavio_2t": ["PL", "MDB", "União Brasil", "PP", "Republicanos", "Novo"],
+  "neutros": ["PSD (Kassab)"],
+  "congresso_2027": "PL 121 deputados / 28 senadores; PT 70 / 9; PL+Novo+Republicanos 172 deputados / 36 senadores; 20 partidos na Câmara",
+  "fonte": "Bloomberg Línea e Gazeta do Povo, out/2026",
+  "url": "https://www.gazetadopovo.com.br/eleicoes/2026/neutralidade-psd-kassab-eleicoes-2026-flavio-lula/"
+ },
+ "prioridades": [
+  {"item": "Pé-de-Meia universitário, Desenrola, MEI, combustíveis", "tipo": "promessa de campanha (compilação InfoMoney 25/10/2026)", "url": "https://www.infomoney.com.br/politica/lula-reeleito-quais-promessas-da-campanha-ficam-para-o-quarto-mandato/"},
+  {"item": "Implementação do fim da escala 6x1 (EC promulgada em 16/10/2026)", "tipo": "lei já aprovada", "url": "https://www.infomoney.com.br/politica/lula-reeleito-quais-promessas-da-campanha-ficam-para-o-quarto-mandato/"},
+  {"item": "Reforma tributária: regulamentação e transição a partir de 2027", "tipo": "agenda legislativa", "url": "https://www.infomoney.com.br/politica/lula-reeleito-quais-promessas-da-campanha-ficam-para-o-quarto-mandato/"},
+  {"item": "Pressão fiscal: IFI estima R$ 298,4 bi de impacto dos benefícios de 2026; dívida bruta 82,9% do PIB", "tipo": "alerta de instituição independente (IFI)", "url": "https://www12.senado.leg.br/ifi"},
+  {"item": "Pedido do partido Novo ao TSE para cassar a chapa Lula–Alckmin", "tipo": "contencioso em curso", "url": "https://www.bloomberglinea.com.br/brasil/lula-e-reeleito-com-5174-no-segundo-turno-e-chega-ao-quarto-mandato-na-presidencia/"}
+ ],
+ "oficial": [
+  {"quem": "Lula, reunião ministerial 31/03/2026", "frase": "Não tem novo programa de governo. A máquina está aí andando, ela tem que continuar andando.", "url": "https://www.poder360.com.br/poder-governo/lula-reune-equipe-cobra-foco-nas-eleicoes-e-veta-mudancas-no-governo/"}
+ ]
+}

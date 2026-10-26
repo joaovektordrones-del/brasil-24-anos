@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rastreador do novo governo 2027–2030 · A Conta Brasil</title>
+<meta name="description" content="Ministros cotados e nomeados, cronograma da posse, coalizão e prioridades do mandato 2027–2030 — cada item com fonte e data, separando o que é reportado do que é oficial.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0f14;--card:#121821;--card2:#171f2a;--line:#232c38;--tx:#e8edf3;--mut:#8b96a5;--dim:#5e6977;--amb:#f2b63c;--ok:#3ccf8e;--red:#ff5a5a;--blue:#6aa0ff}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--tx);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}body{overflow-x:hidden}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+header{position:sticky;top:0;z-index:20;background:rgba(11,15,20,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:center;gap:12px;height:52px;flex-wrap:wrap}.brand{font-weight:800;letter-spacing:-.02em;font-size:17px}.brand span{color:var(--amb)}.top .sp{flex:1}.nav a{padding:6px 10px;font-size:13px;color:var(--mut)}
+.hero{padding:34px 0 10px}.hero h1{font-size:clamp(26px,4.5vw,42px);font-weight:800;letter-spacing:-.03em;line-height:1.05}.hero p{color:var(--mut);max-width:760px;margin-top:10px;font-size:15px;line-height:1.5}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:14px;min-width:0}.card h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);font-weight:700;margin-bottom:10px}
+.aviso{background:#1b1a12;border:1px solid #3a3416;color:#f3d98a;font-size:13px;padding:10px 12px;border-radius:10px;margin-top:14px}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:7px 6px;border-bottom:1px dashed var(--line);text-align:left;vertical-align:top}th{color:var(--mut);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:999px;background:var(--card2);color:var(--mut);white-space:nowrap}
+.tag.of{background:#12331f;color:var(--ok)}.tag.rep{background:#2a2410;color:var(--amb)}.tag.no{background:var(--card2);color:var(--dim)}
+.tl{display:flex;flex-direction:column;gap:8px}.tl div{display:grid;grid-template-columns:110px 1fr;gap:10px;font-size:13px;padding:8px 10px;background:var(--card2);border-radius:8px;border-left:3px solid var(--line)}.tl div.feito{border-left-color:var(--ok)}.tl div.prox{border-left-color:var(--amb)}
+.tl small{color:var(--mut);font-size:11px;display:block}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.kpi div{background:var(--card2);border-radius:10px;padding:12px}.kpi b{display:block;font-size:22px;letter-spacing:-.02em}.kpi small{color:var(--mut);font-size:12px;line-height:1.4;display:block}
+.note{font-size:12px;color:var(--dim);line-height:1.45;margin-top:8px}
+footer{border-top:1px solid var(--line);padding:18px 0 40px;font-size:12px;color:var(--mut);line-height:1.6;margin-top:24px}
+</style>
+</head>
+<body>
+<header><div class="wrap top"><div class="brand">A CONTA <span>BRASIL</span> <span style="color:var(--mut);font-weight:500;font-size:13px">· novo governo</span></div><div class="sp"></div><nav class="nav"><a href="../auditoria/">Auditoria</a><a href="../pais/">Que país somos</a><a href="../apuracao/">Apuração</a><a href="../">Brasil, 24 anos</a></nav></div></header>
+<main class="wrap">
+ <section class="hero"><h1>Rastreador do novo governo, 2027–2030</h1><p>Quem vai mandar em cada pasta, quando toma posse, o que foi prometido e o que virou ato. Cada linha diz se é <b>reportado pela imprensa</b> ou <b>oficial</b> (DOU, TSE, fala pública), com data e link. Quando um cotado virar nomeação, a linha muda de cor.</p></section>
+ <div class="aviso" id="aviso"></div>
+ <div class="card"><h2>Cronograma</h2><div class="tl" id="tl"></div></div>
+ <div class="card"><h2>Ministérios — titular hoje, cotados, status</h2><div style="overflow:auto"><table id="pastas"></table></div><div class="note">Legenda: <span class="tag of">OFICIAL</span> nomeado/declarado em fonte oficial · <span class="tag rep">REPORTADO</span> especulação de imprensa com fonte · <span class="tag no">SEM NOME</span> nenhuma reportagem localizada. Titulares "desde abr/2026" são os substitutos nomeados quando os ministros saíram para disputar a eleição.</div></div>
+ <div class="card"><h2>Coalizão e Congresso</h2><div class="kpi" id="coal"></div></div>
+ <div class="card"><h2>Prioridades e pressões</h2><table id="prio"></table></div>
+ <div class="card"><h2>Falas oficiais relevantes</h2><div id="of"></div></div>
+</main>
+<footer><div class="wrap">Fontes listadas em cada linha. Atualizado em <span id="atu"></span>. <b>Material independente de João Marques · A Conta Brasil.</b></div></footer>
+<script>
+(async()=>{const $=id=>document.getElementById(id);const G=await (await fetch('../data/governo.json')).json();
+$('atu').textContent=new Date(G.atualizado).toLocaleString('pt-BR');$('aviso').textContent=G.aviso;
+const hoje=new Date().toISOString().slice(0,10);
+$('tl').innerHTML=G.cronograma.map(c=>`<div class="${c.status==='feito'?'feito':(c.data>=hoje?'prox':'')}"><span class="mono">${c.data.split('-').reverse().join('/')}</span><span>${c.evento}<small>${c.fonte} · <a href="${c.url}" target="_blank" rel="noopener">fonte</a></small></span></div>`).join('');
+const tag=s=>s==='oficial'?'<span class="tag of">OFICIAL</span>':s==='reportado'?'<span class="tag rep">REPORTADO</span>':s==='mandato fixo'?'<span class="tag no">MANDATO FIXO</span>':'<span class="tag no">SEM NOME</span>';
+$('pastas').innerHTML='<tr><th>pasta</th><th>titular hoje</th><th>cotados</th><th>status</th></tr>'+G.pastas.map(p=>`<tr><td><b>${p.pasta}</b></td><td>${p.titular}</td><td>${p.cotados.length?p.cotados.map(c=>`<div><b>${c.nome}</b> — ${c.obs} <small style="color:var(--mut)">(${c.fonte}, <a href="${c.url}" target="_blank" rel="noopener">link</a>)</small></div>`).join(''):'<span style="color:var(--dim)">nenhum nome reportado</span>'}</td><td>${tag(p.status)}</td></tr>`).join('');
+const C=G.coalizao;$('coal').innerHTML=`<div><small>Com Lula no 1º turno</small><b style="font-size:14px">${C.lula_1t.join(', ')}</b><small>adesões no 2º: ${C.lula_2t_adesoes.join(', ')}</small></div><div><small>Com Flávio no 2º turno</small><b style="font-size:14px">${C.flavio_2t.join(', ')}</b><small>neutro: ${C.neutros.join(', ')}</small></div><div><small>Congresso a partir de fev/2027</small><b style="font-size:14px">${C.congresso_2027}</b><small>${C.fonte} · <a href="${C.url}" target="_blank" rel="noopener">fonte</a></small></div>`;
+$('prio').innerHTML='<tr><th>item</th><th>tipo</th><th></th></tr>'+G.prioridades.map(p=>`<tr><td>${p.item}</td><td style="color:var(--mut)">${p.tipo}</td><td><a href="${p.url}" target="_blank" rel="noopener">fonte</a></td></tr>`).join('');
+$('of').innerHTML=G.oficial.map(o=>`<p style="font-size:14px;line-height:1.5">“${o.frase}” — <b>${o.quem}</b> · <a href="${o.url}" target="_blank" rel="noopener">fonte</a></p>`).join('');
+})();
+</script>
+</body>
+</html>
