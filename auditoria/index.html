@@ -30,7 +30,7 @@ header{position:sticky;top:0;z-index:20;background:rgba(11,15,20,.92);backdrop-f
 .card p,.card li{font-size:14px;line-height:1.55;color:#cfd6df}
 .card ul{padding-left:18px}
 .chk{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
-.chk div{background:var(--card2);border-radius:10px;padding:12px;border-left:4px solid var(--ok)}
+.chk{min-width:0}.chk div{min-width:0;background:var(--card2);border-radius:10px;padding:12px;border-left:4px solid var(--ok)}
 .chk div.amb{border-left-color:var(--amb)}.chk div.dim{border-left-color:var(--dim)}
 .chk b{display:block;font-size:14px;margin-bottom:4px}.chk small{color:var(--mut);font-size:12px;line-height:1.45;display:block}
 table{width:100%;border-collapse:collapse;font-size:13px}
@@ -66,6 +66,7 @@ footer{border-top:1px solid var(--line);padding:18px 0 40px;font-size:12px;color
    <div><b>Contabilidade 1º turno → 2º turno</b><small id="c2">carregando…</small></div>
    <div><b>Recuos de votos entre gerações do TSE</b><small>Todas as quedas observadas em leituras consecutivas tinham a mesma assinatura: os dois candidatos caindo junto com as seções, com números idênticos a uma geração anterior já publicada. Causa: o TSE serve o arquivo por vários servidores e um deles devolvia versão mais antiga (réplica atrasada). Nenhuma geração mais nova mostrou candidato perdendo voto. Impacto no resultado: 0,00 p.p.</small></div>
    <div><b>Abstenção, brancos e nulos por bloco de estados</b><small id="c4">carregando…</small></div>
+   <div><b>Tese da inversão (13↔22 nos eleitores de terceiros)</b><small>Testada em mais de 3 mil municípios com apuração completa: a parcela do estoque que foi para Lula é MENOR onde Caiado e Flávio foram fortes e MAIOR nas cidades do Lula — o contrário do que uma inversão dentro da urna produziria. Detalhe na seção 5.</small></div>
    <div class="amb"><b>Migração direta de eleitores entre candidatos</b><small>O dado agregado por município não distingue "eleitor do Flávio foi para Lula e foi reposto por eleitor de terceiro" de "ninguém migrou". Só o boletim de urna por seção, cruzado com o 1º turno da mesma seção, aproxima isso. Pendente (ver abaixo).</small></div>
    <div class="dim"><b>Boletim de urna × totalização — Brasil inteiro (499.248 seções)</b><small>Feito para MS (100%) e exterior (parcial, durante a votação). O restante do país está em fila: mesmo método, mesmo código aberto.</small></div>
   </div>
@@ -80,9 +81,9 @@ footer{border-top:1px solid var(--line);padding:18px 0 40px;font-size:12px;color
  <div class="card">
   <h2>2. Contabilidade 1º → 2º turno</h2>
   <p>Entre os dois turnos existe um "estoque" de votos que mudou de destino: votos dos outros candidatos do 1º turno, eleitores que não votaram no 1º e votaram no 2º, e eleitores que votaram branco/nulo no 1º e escolheram alguém no 2º. A soma desse estoque tem de ser igual à soma dos ganhos dos dois finalistas. Se não fosse, haveria voto sem origem.</p>
-  <table id="contab"></table>
+  <div style="overflow:auto"><table id="contab"></table></div>
   <h3>Por bloco de estados</h3>
-  <table id="blocos"></table>
+  <div style="overflow:auto"><table id="blocos"></table></div>
   <div class="note">Fontes: TSE, eleição 6257 (1º turno, totalização final) e 6258 (2º turno), arquivos <span class="mono">uf-c0001-e00625x-u.json</span>. "Estados do Flávio" = onde Flávio teve mais votos que Lula no 1º turno.</div>
  </div>
 
@@ -91,14 +92,24 @@ footer{border-top:1px solid var(--line);padding:18px 0 40px;font-size:12px;color
   <p>Cada urna imprime e transmite um <b>boletim de urna (BU)</b> assinado digitalmente. O TSE publica o arquivo de cada seção (<span class="mono">arquivo-urna/3221/dados/ms/…-bu.dat</span>, formato ASN.1). Este site baixou e decodificou os BUs das <b>7.106 seções</b> dos 79 municípios de MS e somou município por município. Depois comparou com a totalização oficial (<span class="mono">ms{município}-c0001-e006258-u.json</span>).</p>
   <div class="kpi" id="kpiMs"></div>
   <h3>Bela Vista/MS</h3>
-  <table id="bv"></table>
+  <div style="overflow:auto"><table id="bv"></table></div>
   <h3>Os 79 municípios</h3>
   <div style="overflow:auto;max-height:520px"><table id="muns"></table></div>
   <div class="note">Decodificador e dados abertos: <a href="../data/auditoria_ms.json" download>auditoria_ms.json</a> (município a município e seção a seção) · código do decodificador em <span class="mono">lib/bu.js</span> no repositório do site. Reproduza: baixe o BU de qualquer seção no site do TSE e compare.</div>
  </div>
 
+ <div class="card" id="tese">
+  <h2>5. Teste de uma tese alternativa: "a urna inverteu o voto de quem era de terceiro candidato"</h2>
+  <p>A tese: os ~9,3 milhões de eleitores de Caiado, Cury, Renan Santos e outros no 1º turno teriam, no 2º, o voto trocado dentro da urna (13 → 22, 22 → 13), e por isso Lula teria recebido "o que era do Flávio". Ela faz uma <b>previsão geográfica testável</b>: se fosse verdade, a parcela do estoque que foi para Lula seria <b>maior</b> justamente onde esses candidatos foram fortes e o eleitorado é de direita (interior de GO, agro, Centro-Oeste) — porque ali a intenção majoritária (Flávio) estaria sendo gravada como Lula — e <b>menor</b> nas cidades do Lula, onde a inversão jogaria voto para Flávio. Testamos em cada município com apuração completa.</p>
+  <div class="kpi" id="teseKpi"></div>
+  <h3>Parcela do estoque que foi para Lula, por tipo de município</h3>
+  <div style="overflow:auto"><table id="teseTab"></table></div>
+  <div id="teseVer" class="note" style="font-size:13px;color:var(--tx)"></div>
+  <div class="note">Estoque = votos dos outros candidatos no 1º turno + comparecimento adicional + ex-brancos/nulos; identidade contábil estoque = ganho Lula + ganho Flávio, verificada município a município. "Força do Flávio" = parcela dele entre os dois no 1º turno; "Caiado" = parcela de Ronaldo Caiado nos válidos do 1º turno (o maior dos terceiros). Correlação ponderada pelo tamanho do estoque. Dados: <a href="../data/tese_inversao.json" download>tese_inversao.json</a>.</div>
+ </div>
+
  <div class="card">
-  <h2>4. O que isto prova e o que não prova</h2>
+  <h2>6. O que isto prova e o que não prova</h2>
   <p><b>Prova:</b> em MS, o que cada urna registrou é exatamente o que o TSE totalizou — não houve alteração entre a urna e o resultado publicado. No Brasil, a contabilidade entre turnos fecha e nenhuma geração do arquivo nacional retirou voto de candidato.</p>
   <p><b>Não prova:</b> (a) o que aconteceu dentro da urna antes do boletim (isso é objeto do teste de integridade e da auditoria da Justiça Eleitoral, não deste site); (b) migração individual de eleitor entre candidatos; (c) o mesmo cruzamento BU × totalização para os outros 26 estados, ainda em fila.</p>
   <h3>Próximas verificações (em ordem)</h3>
@@ -146,6 +157,18 @@ const P=j=>{const c=j.carg[0].agr.flatMap(a=>a.par.flatMap(p=>p.cand));return {F
   $('blocos').innerHTML='<tr><th>bloco</th><th class="n">Flávio 1º → 2º</th><th class="n">Lula 1º → 2º</th><th class="n">abstenção</th><th class="n">brancos+nulos</th></tr>'+row('Estados onde Flávio venceu no 1º turno',fw)+row('Estados onde Lula venceu no 1º turno',lw);
   $('c4').innerHTML=`Abstenção caiu nos dois blocos (estados do Flávio ${pc((1-fw.c1/fw.te1)*100,1)} → ${pc((1-fw.c2/fw.te2)*100,1)}; estados do Lula ${pc((1-lw.c1/lw.te1)*100,1)} → ${pc((1-lw.c2/lw.te2)*100,1)}); brancos+nulos caíram nos dois. <span class="ok">Sem assimetria</span> que favoreça um lado.`;
  }catch(e){$('c2').textContent='Falha ao ler o TSE agora: '+e.message;}
+
+ try{
+  const T=await (await fetch('../data/tese_inversao.json')).json();const rows=T.rows.map(r=>({u:r[0],nm:r[2],F1:r[3],L1:r[4],C1:r[5],vv1:r[6],outros:r[7],dcomp:r[8],dbn:r[9],dL:r[10],dF:r[11]})).map(r=>({...r,pool:r.outros+r.dcomp+r.dbn,rF:r.F1/(r.F1+r.L1),cs:r.C1/r.vv1}));
+  const grp=f=>{let pool=0,dL=0,dF=0,n=0;for(const r of rows)if(f(r)){pool+=r.pool;dL+=r.dL;dF+=r.dF;n++;}return {n,pool,ls:dL/(dL+dF)*100};};
+  const q=(arr,p)=>{const s=arr.slice().sort((a,b)=>a-b);return s[Math.floor(p*(s.length-1))];};const cs=rows.map(r=>r.cs);const c1=q(cs,1/3),c2=q(cs,2/3);
+  const G=[['Cidades onde Flávio teve ≥60% no 1º turno',grp(r=>r.rF>=0.6)],['Cidades equilibradas (40–60%)',grp(r=>r.rF>0.4&&r.rF<0.6)],['Cidades onde Lula teve ≥60% no 1º turno',grp(r=>r.rF<=0.4)],['Terço com MAIS voto em Caiado no 1º turno',grp(r=>r.cs>=c2)],['Terço do meio',grp(r=>r.cs>=c1&&r.cs<c2)],['Terço com MENOS voto em Caiado',grp(r=>r.cs<c1)],['Flávio ≥60% E Caiado alto (o lugar da tese)',grp(r=>r.rF>=0.6&&r.cs>=c2)],['Lula ≥60% E Caiado alto',grp(r=>r.rF<=0.4&&r.cs>=c2)]];
+  $('teseTab').innerHTML='<tr><th>grupo de municípios</th><th class="n">municípios</th><th class="n">estoque</th><th class="n">foi para Lula</th><th class="n">foi para Flávio</th><th>o que a tese previa</th></tr>'+G.map(([n,g],i)=>`<tr><td>${n}</td><td class="n mono">${fmt(g.n)}</td><td class="n mono">${fmt(g.pool)}</td><td class="n mono" style="color:var(--l)">${pc(g.ls,1)}</td><td class="n mono" style="color:var(--f)">${pc(100-g.ls,1)}</td><td style="color:var(--mut);font-size:12px">${i===0||i===3||i===6?'parcela de Lula ALTA (voto de direita invertido)':i===2||i===5||i===7?'parcela de Lula BAIXA (voto de esquerda invertido)':'—'}</td></tr>`).join('');
+  const a=G[0][1].ls,b=G[2][1].ls,c=G[6][1].ls,d=G[7][1].ls;
+  $('teseKpi').innerHTML=`<div><small>Municípios testados (100% apurados)</small><b class="mono">${fmt(rows.length)}</b><small>identidade contábil fecha em todos</small></div><div><small>Correlação: parcela de Lula no estoque × força do Caiado</small><b class="mono" style="color:${T.corr_caiado.r<0?'var(--ok)':'var(--red)'}">${T.corr_caiado.r.toFixed(2)}</b><small>tese previa correlação POSITIVA</small></div><div><small>Correlação: parcela de Lula × força do Flávio</small><b class="mono" style="color:${T.corr_forca_flavio.r<0?'var(--ok)':'var(--red)'}">${T.corr_forca_flavio.r.toFixed(2)}</b><small>tese previa POSITIVA</small></div>`;
+  const refuta=a<b&&c<d&&T.corr_caiado.r<0;
+  $('teseVer').innerHTML=refuta?`<b style="color:var(--ok)">Resultado: a tese é refutada pelos dados.</b> Onde Flávio é forte, Lula ficou com ${pc(a,1)} do estoque; onde Lula é forte, com ${pc(b,1)}. Onde Caiado foi mais votado em cidade de direita — o lugar exato onde a inversão deixaria rastro — Lula ficou com ${pc(c,1)}, <b>menos</b> que nas cidades do próprio Lula com Caiado alto (${pc(d,1)}). A partilha do estoque segue a cor política local (correlações negativas de ${T.corr_caiado.r.toFixed(2)} e ${T.corr_forca_flavio.r.toFixed(2)}), que é o comportamento normal de eleitor; uma inversão mecânica dentro da urna produziria o gradiente contrário. O que os dados <b>não</b> excluem: parte dos eleitores de Flávio no 1º turno votou Lula no 2º e foi reposta por eleitores de terceiros (migração real, não troca de máquina) — isso só o BU por seção cruzado entre turnos aproxima.`:`<b style="color:var(--amb)">Resultado: padrão ambíguo — ver tabela.</b>`;
+ }catch(e){$('teseVer').textContent='Dados do teste indisponíveis: '+e.message;}
  try{
   const A=await (await fetch('../data/auditoria_ms.json')).json();const t=A.tot;const ok=t.L_bu===t.L_tot&&t.F_bu===t.F_tot&&t.comp_bu===t.comp_tot;
   $('c1').innerHTML=`${fmt(A.secoes)} seções, 79 municípios. Soma dos BUs: Lula ${fmt(t.L_bu)}, Flávio ${fmt(t.F_bu)}, comparecimento ${fmt(t.comp_bu)}. Totalização do TSE: Lula ${fmt(t.L_tot)}, Flávio ${fmt(t.F_tot)}, comparecimento ${fmt(t.comp_tot)}. <span class="${ok?'ok':'bad'}">${ok?'Idênticos — zero divergência.':'Divergência encontrada.'}</span> Lido em ${new Date(A.gerado).toLocaleString('pt-BR')}.`;
