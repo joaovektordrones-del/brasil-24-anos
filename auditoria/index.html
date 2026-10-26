@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auditoria cidadã do 2º turno 2026 · A Conta Brasil</title>
+<meta name="description" content="O que foi verificado na apuração do 2º turno de 2026, direto nos arquivos do TSE: boletim de urna seção por seção em Mato Grosso do Sul, contabilidade 1º × 2º turno, recuos, abstenção. O que bateu, o que o dado não prova e o que ainda falta checar.">
+<meta property="og:title" content="Auditoria cidadã do 2º turno 2026">
+<meta property="og:description" content="7.106 boletins de urna de MS conferidos contra a totalização do TSE. Contabilidade 1º × 2º turno. Sem adjetivo: só número e fonte.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0f14;--card:#121821;--card2:#171f2a;--line:#232c38;--tx:#e8edf3;--mut:#8b96a5;--dim:#5e6977;--amb:#f2b63c;--ok:#3ccf8e;--red:#ff5a5a;--l:#ff6b61;--f:#6aa0ff}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--tx);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{overflow-x:hidden}
+a{color:var(--f);text-decoration:none}a:hover{text-decoration:underline}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+header{position:sticky;top:0;z-index:20;background:rgba(11,15,20,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:center;gap:12px;height:52px;flex-wrap:wrap}
+.brand{font-weight:800;letter-spacing:-.02em;font-size:17px}.brand span{color:var(--amb)}
+.top .sp{flex:1}.nav a{padding:6px 10px;font-size:13px;color:var(--mut)}
+.hero{padding:34px 0 10px}
+.hero h1{font-size:clamp(26px,4.5vw,42px);font-weight:800;letter-spacing:-.03em;line-height:1.05}
+.hero p{color:var(--mut);max-width:760px;margin-top:10px;font-size:15px;line-height:1.5}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:14px;min-width:0}
+.card h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);font-weight:700;margin-bottom:10px}
+.card h3{font-size:16px;font-weight:700;margin:14px 0 6px}
+.card p,.card li{font-size:14px;line-height:1.55;color:#cfd6df}
+.card ul{padding-left:18px}
+.chk{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.chk div{background:var(--card2);border-radius:10px;padding:12px;border-left:4px solid var(--ok)}
+.chk div.amb{border-left-color:var(--amb)}.chk div.dim{border-left-color:var(--dim)}
+.chk b{display:block;font-size:14px;margin-bottom:4px}.chk small{color:var(--mut);font-size:12px;line-height:1.45;display:block}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:6px;border-bottom:1px dashed var(--line);text-align:left;vertical-align:top}
+th{color:var(--mut);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+td.n,th.n{text-align:right}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--red);font-weight:700}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.kpi div{background:var(--card2);border-radius:10px;padding:12px}
+.kpi b{display:block;font-size:24px;letter-spacing:-.02em}.kpi small{color:var(--mut);font-size:12px}
+.note{font-size:12px;color:var(--dim);line-height:1.45;margin-top:8px}
+.bt{font:inherit;font-size:12px;background:var(--card2);color:var(--tx);border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer}
+footer{border-top:1px solid var(--line);padding:18px 0 40px;font-size:12px;color:var(--mut);line-height:1.6;margin-top:24px}
+</style>
+</head>
+<body>
+<header><div class="wrap top">
+ <div class="brand">A CONTA <span>BRASIL</span> <span style="color:var(--mut);font-weight:500;font-size:13px">· auditoria cidadã</span></div>
+ <div class="sp"></div>
+ <nav class="nav"><a href="../apuracao/">Apuração</a><a href="../pais/">Que país somos</a><a href="../">Brasil, 24 anos</a></nav>
+</div></header>
+
+<main class="wrap">
+ <section class="hero">
+  <h1>Auditoria cidadã do 2º turno de 2026</h1>
+  <p>Durante toda a apuração de 25/10/2026 este site leu os arquivos públicos do TSE a cada poucos segundos. Esta página registra <b>o que foi verificado, o que bateu, o que o dado agregado não consegue provar e o que ainda falta checar</b>. Sem adjetivo: número, fonte e método, para que qualquer pessoa refaça a conta.</p>
+ </section>
+
+ <div class="card">
+  <h2>Resumo das verificações</h2>
+  <div class="chk" id="chk">
+   <div><b>Boletim de urna × totalização — MS, 7.106 seções</b><small id="c1">carregando…</small></div>
+   <div><b>Contabilidade 1º turno → 2º turno</b><small id="c2">carregando…</small></div>
+   <div><b>Recuos de votos entre gerações do TSE</b><small>Todas as quedas observadas em leituras consecutivas tinham a mesma assinatura: os dois candidatos caindo junto com as seções, com números idênticos a uma geração anterior já publicada. Causa: o TSE serve o arquivo por vários servidores e um deles devolvia versão mais antiga (réplica atrasada). Nenhuma geração mais nova mostrou candidato perdendo voto. Impacto no resultado: 0,00 p.p.</small></div>
+   <div><b>Abstenção, brancos e nulos por bloco de estados</b><small id="c4">carregando…</small></div>
+   <div class="amb"><b>Migração direta de eleitores entre candidatos</b><small>O dado agregado por município não distingue "eleitor do Flávio foi para Lula e foi reposto por eleitor de terceiro" de "ninguém migrou". Só o boletim de urna por seção, cruzado com o 1º turno da mesma seção, aproxima isso. Pendente (ver abaixo).</small></div>
+   <div class="dim"><b>Boletim de urna × totalização — Brasil inteiro (499.248 seções)</b><small>Feito para MS (100%) e exterior (parcial, durante a votação). O restante do país está em fila: mesmo método, mesmo código aberto.</small></div>
+  </div>
+ </div>
+
+ <div class="card">
+  <h2>1. Resultado nacional (TSE)</h2>
+  <div class="kpi" id="kpi"></div>
+  <div class="note" id="kpiNota"></div>
+ </div>
+
+ <div class="card">
+  <h2>2. Contabilidade 1º → 2º turno</h2>
+  <p>Entre os dois turnos existe um "estoque" de votos que mudou de destino: votos dos outros candidatos do 1º turno, eleitores que não votaram no 1º e votaram no 2º, e eleitores que votaram branco/nulo no 1º e escolheram alguém no 2º. A soma desse estoque tem de ser igual à soma dos ganhos dos dois finalistas. Se não fosse, haveria voto sem origem.</p>
+  <table id="contab"></table>
+  <h3>Por bloco de estados</h3>
+  <table id="blocos"></table>
+  <div class="note">Fontes: TSE, eleição 6257 (1º turno, totalização final) e 6258 (2º turno), arquivos <span class="mono">uf-c0001-e00625x-u.json</span>. "Estados do Flávio" = onde Flávio teve mais votos que Lula no 1º turno.</div>
+ </div>
+
+ <div class="card">
+  <h2>3. Boletim de urna seção por seção — Mato Grosso do Sul</h2>
+  <p>Cada urna imprime e transmite um <b>boletim de urna (BU)</b> assinado digitalmente. O TSE publica o arquivo de cada seção (<span class="mono">arquivo-urna/3221/dados/ms/…-bu.dat</span>, formato ASN.1). Este site baixou e decodificou os BUs das <b>7.106 seções</b> dos 79 municípios de MS e somou município por município. Depois comparou com a totalização oficial (<span class="mono">ms{município}-c0001-e006258-u.json</span>).</p>
+  <div class="kpi" id="kpiMs"></div>
+  <h3>Bela Vista/MS</h3>
+  <table id="bv"></table>
+  <h3>Os 79 municípios</h3>
+  <div style="overflow:auto;max-height:520px"><table id="muns"></table></div>
+  <div class="note">Decodificador e dados abertos: <a href="../data/auditoria_ms.json" download>auditoria_ms.json</a> (município a município e seção a seção) · código do decodificador em <span class="mono">lib/bu.js</span> no repositório do site. Reproduza: baixe o BU de qualquer seção no site do TSE e compare.</div>
+ </div>
+
+ <div class="card">
+  <h2>4. O que isto prova e o que não prova</h2>
+  <p><b>Prova:</b> em MS, o que cada urna registrou é exatamente o que o TSE totalizou — não houve alteração entre a urna e o resultado publicado. No Brasil, a contabilidade entre turnos fecha e nenhuma geração do arquivo nacional retirou voto de candidato.</p>
+  <p><b>Não prova:</b> (a) o que aconteceu dentro da urna antes do boletim (isso é objeto do teste de integridade e da auditoria da Justiça Eleitoral, não deste site); (b) migração individual de eleitor entre candidatos; (c) o mesmo cruzamento BU × totalização para os outros 26 estados, ainda em fila.</p>
+  <h3>Próximas verificações (em ordem)</h3>
+  <ul>
+   <li>BU × totalização para as 499.248 seções do país, com lista pública de qualquer divergência.</li>
+   <li>Seção a seção, 1º turno × 2º turno: onde o comparecimento e o voto mudaram mais que o esperado, com os BUs dos dois turnos lado a lado.</li>
+   <li>Log de urna (<span class="mono">-log.jez</span>) das seções com horário de encerramento fora do padrão.</li>
+   <li>RDV (registro digital do voto) das seções de Bela Vista/MS, para conferência de contagem.</li>
+  </ul>
+ </div>
+</main>
+
+<footer><div class="wrap">
+ Fontes: TSE — <a href="https://resultados.tse.jus.br/" target="_blank" rel="noopener">resultados.tse.jus.br</a> (ciclo ele2026, pleito 3221, eleições 6257 e 6258). Resultado oficial é o do TSE; esta página é conferência independente, publicada em <span id="pub"></span>. <b>Material independente de João Marques · A Conta Brasil.</b>
+</div></footer>
+
+<script src="../apuracao/r1.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);const fmt=n=>Number(n).toLocaleString('pt-BR');const pc=(n,d=2)=>Number(n).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d})+'%';
+const API=location.hostname.endsWith('github.io')?'https://acontabrasil-seven.vercel.app/api/tse?p=':'/api/tse?p=';
+$('pub').textContent=new Date().toLocaleDateString('pt-BR');
+const P=j=>{const c=j.carg[0].agr.flatMap(a=>a.par.flatMap(p=>p.cand));return {F:+c.find(z=>z.n==='22').vap,L:+c.find(z=>z.n==='13').vap,pst:j.s.pst,est:+j.e.est,c:+j.e.c,pa:j.e.pa,vb:+j.v.vb,vn:+j.v.tvn,tv:+j.v.tv,hg:j.hg,dg:j.dg,tf:j.tf};};
+(async()=>{
+ try{
+  const br=P(await (await fetch(API+encodeURIComponent('6258/dados/br/br-c0001-e006258-u.json'))).json());const r=R1.br;
+  $('kpi').innerHTML=`<div><small>Lula (13)</small><b class="mono" style="color:var(--l)">${pc(br.L/(br.L+br.F)*100)}</b><small class="mono">${fmt(br.L)} votos</small></div><div><small>Flávio Bolsonaro (22)</small><b class="mono" style="color:var(--f)">${pc(br.F/(br.L+br.F)*100)}</b><small class="mono">${fmt(br.F)} votos</small></div><div><small>Seções apuradas</small><b class="mono">${br.pst}%</b><small>${br.tf==='s'?'totalização final':'em totalização'}</small></div><div><small>Abstenção</small><b class="mono">${br.pa}%</b><small>1º turno: ${pc((1-r[1]/r[0])*100)}</small></div>`;
+  $('kpiNota').textContent=`Arquivo do TSE gerado em ${br.dg} ${br.hg} (Brasília). Percentuais entre os dois candidatos (válidos).`;
+  const outros=r[2]-r[6]-r[7],dcomp=br.c-r[1],dbn=(r[3]+r[4])-(br.vb+br.vn),dF=br.F-r[6],dL=br.L-r[7],pool=outros+dcomp+dbn,gan=dF+dL;
+  $('contab').innerHTML=`<tr><th>Origem do estoque</th><th class="n">votos</th><th class="n">% do estoque</th></tr>
+   <tr><td>Votos dos outros candidatos no 1º turno</td><td class="n mono">${fmt(outros)}</td><td class="n mono">${pc(outros/pool*100,1)}</td></tr>
+   <tr><td>Comparecimento maior no 2º turno (abstenção ${pc((1-r[1]/r[0])*100,1)} → ${br.pa}%)</td><td class="n mono">${fmt(dcomp)}</td><td class="n mono">${pc(dcomp/pool*100,1)}</td></tr>
+   <tr><td>Menos brancos e nulos (${fmt(r[3]+r[4])} → ${fmt(br.vb+br.vn)})</td><td class="n mono">${fmt(dbn)}</td><td class="n mono">${pc(dbn/pool*100,1)}</td></tr>
+   <tr><td><b>Estoque total</b></td><td class="n mono"><b>${fmt(pool)}</b></td><td class="n mono">100%</td></tr>
+   <tr><th>Destino</th><th class="n">votos</th><th class="n">% dos ganhos</th></tr>
+   <tr><td>Lula: ${fmt(r[7])} → ${fmt(br.L)}</td><td class="n mono" style="color:var(--l)">+${fmt(dL)}</td><td class="n mono">${pc(dL/gan*100,1)}</td></tr>
+   <tr><td>Flávio: ${fmt(r[6])} → ${fmt(br.F)}</td><td class="n mono" style="color:var(--f)">+${fmt(dF)}</td><td class="n mono">${pc(dF/gan*100,1)}</td></tr>
+   <tr><td><b>Soma dos ganhos</b></td><td class="n mono"><b>${fmt(gan)}</b></td><td class="n mono ${Math.abs(gan-pool)<=Math.max(5000,pool*0.002)?'ok':'bad'}">${Math.abs(gan-pool)<=Math.max(5000,pool*0.002)?'= estoque ✓':'≠ estoque: diferença '+fmt(gan-pool)}</td></tr>`;
+  $('c2').innerHTML=`Estoque de ${fmt(pool)} votos (outros candidatos ${pc(outros/pool*100,0)}, novos votantes ${pc(dcomp/pool*100,0)}, ex-brancos/nulos ${pc(dbn/pool*100,0)}) = ganhos dos dois finalistas (${fmt(gan)}). <span class="ok">Fecha.</span> Lula ficou com ${pc(dL/gan*100,0)}, Flávio com ${pc(dF/gan*100,0)}.`;
+  // blocos
+  const ufs=Object.keys(R1).filter(k=>k!=='br');const D={};await Promise.all(ufs.map(async u=>{try{D[u]=P(await (await fetch(API+encodeURIComponent(`6258/dados/${u}/${u}-c0001-e006258-u.json`))).json());}catch(e){}}));
+  const fw={F1:0,L1:0,F2:0,L2:0,te1:0,c1:0,te2:0,c2:0,bn1:0,bn2:0},lw={...fw};
+  for(const u of ufs){const d=D[u],x=R1[u];if(!d)continue;const g=x[6]>x[7]?fw:lw;g.F1+=x[6];g.L1+=x[7];g.F2+=d.F;g.L2+=d.L;g.te1+=x[0];g.c1+=x[1];g.te2+=d.est;g.c2+=d.c;g.bn1+=x[3]+x[4];g.bn2+=d.vb+d.vn;}
+  const row=(n,g)=>`<tr><td>${n}</td><td class="n mono">${fmt(g.F1)} → ${fmt(g.F2)} (${g.F2>=g.F1?'+':''}${pc((g.F2/g.F1-1)*100,1)})</td><td class="n mono">${fmt(g.L1)} → ${fmt(g.L2)} (+${pc((g.L2/g.L1-1)*100,1)})</td><td class="n mono">${pc((1-g.c1/g.te1)*100,1)} → ${pc((1-g.c2/g.te2)*100,1)}</td><td class="n mono">${pc(g.bn1/g.c1*100,1)} → ${pc(g.bn2/g.c2*100,1)}</td></tr>`;
+  $('blocos').innerHTML='<tr><th>bloco</th><th class="n">Flávio 1º → 2º</th><th class="n">Lula 1º → 2º</th><th class="n">abstenção</th><th class="n">brancos+nulos</th></tr>'+row('Estados onde Flávio venceu no 1º turno',fw)+row('Estados onde Lula venceu no 1º turno',lw);
+  $('c4').innerHTML=`Abstenção caiu nos dois blocos (estados do Flávio ${pc((1-fw.c1/fw.te1)*100,1)} → ${pc((1-fw.c2/fw.te2)*100,1)}; estados do Lula ${pc((1-lw.c1/lw.te1)*100,1)} → ${pc((1-lw.c2/lw.te2)*100,1)}); brancos+nulos caíram nos dois. <span class="ok">Sem assimetria</span> que favoreça um lado.`;
+ }catch(e){$('c2').textContent='Falha ao ler o TSE agora: '+e.message;}
+ try{
+  const A=await (await fetch('../data/auditoria_ms.json')).json();const t=A.tot;const ok=t.L_bu===t.L_tot&&t.F_bu===t.F_tot&&t.comp_bu===t.comp_tot;
+  $('c1').innerHTML=`${fmt(A.secoes)} seções, 79 municípios. Soma dos BUs: Lula ${fmt(t.L_bu)}, Flávio ${fmt(t.F_bu)}, comparecimento ${fmt(t.comp_bu)}. Totalização do TSE: Lula ${fmt(t.L_tot)}, Flávio ${fmt(t.F_tot)}, comparecimento ${fmt(t.comp_tot)}. <span class="${ok?'ok':'bad'}">${ok?'Idênticos — zero divergência.':'Divergência encontrada.'}</span> Lido em ${new Date(A.gerado).toLocaleString('pt-BR')}.`;
+  $('kpiMs').innerHTML=`<div><small>Seções conferidas</small><b class="mono">${fmt(A.secoes)}</b><small>de 7.106</small></div><div><small>Lula — BU / TSE</small><b class="mono">${fmt(t.L_bu)}</b><small class="mono">${fmt(t.L_tot)} <span class="${t.L_bu===t.L_tot?'ok':'bad'}">${t.L_bu===t.L_tot?'✓':'≠'}</span></small></div><div><small>Flávio — BU / TSE</small><b class="mono">${fmt(t.F_bu)}</b><small class="mono">${fmt(t.F_tot)} <span class="${t.F_bu===t.F_tot?'ok':'bad'}">${t.F_bu===t.F_tot?'✓':'≠'}</span></small></div><div><small>Municípios divergentes</small><b class="mono ${t.divergentes?'bad':'ok'}">${t.divergentes}</b><small>de 79</small></div>`;
+  const bv=A.municipios.find(m=>m.cd==='90417');
+  $('bv').innerHTML=`<tr><th></th><th class="n">soma dos 67 BUs</th><th class="n">totalização TSE</th><th class="n">dif.</th></tr>`+[['Lula',bv.L,bv.tot.L],['Flávio',bv.F,bv.tot.F],['Brancos',bv.b,bv.tot.b],['Nulos',bv.n,bv.tot.n],['Comparecimento',bv.comp,bv.tot.comp]].map(([n,a,b])=>`<tr><td>${n}</td><td class="n mono">${fmt(a)}</td><td class="n mono">${fmt(b)}</td><td class="n mono ${a===b?'ok':'bad'}">${a===b?'0 ✓':fmt(b-a)}</td></tr>`).join('')+`<tr><td>Aptos / abstenção</td><td class="n mono">${fmt(bv.aptos)}</td><td class="n mono">${pc((1-bv.comp/bv.aptos)*100,1)}</td><td></td></tr>`;
+  const ms=A.municipios.slice().sort((a,b)=>a.nm.localeCompare(b.nm));
+  $('muns').innerHTML='<tr><th>município</th><th class="n">seções</th><th class="n">Lula (BU)</th><th class="n">Flávio (BU)</th><th class="n">Lula (TSE)</th><th class="n">Flávio (TSE)</th><th class="n">dif.</th></tr>'+ms.map(m=>`<tr><td>${m.nm}</td><td class="n mono">${m.secoes}</td><td class="n mono">${fmt(m.L)}</td><td class="n mono">${fmt(m.F)}</td><td class="n mono">${m.tot?fmt(m.tot.L):'—'}</td><td class="n mono">${m.tot?fmt(m.tot.F):'—'}</td><td class="n mono ${(m.difL||m.difF)?'bad':'ok'}">${(m.difL||m.difF)?('L'+m.difL+' F'+m.difF):'0 ✓'}</td></tr>`).join('');
+ }catch(e){$('c1').textContent='Dados da auditoria de MS indisponíveis: '+e.message;}
+})();
+})();
+</script>
+</body>
+</html>

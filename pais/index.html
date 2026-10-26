@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Que país somos — o Brasil comparado a 217 países · A Conta Brasil</title>
+<meta name="description" content="Para cada indicador, quais países estão no mesmo nível que o Brasil hoje: renda, homicídios, juros, dívida, saneamento, educação, inovação. Dados do Banco Mundial, com ano e fonte.">
+<meta property="og:title" content="Que país somos — o Brasil comparado a 217 países">
+<meta property="og:description" content="Em cada indicador, com quem o Brasil se parece. Dados do Banco Mundial.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0f14;--card:#121821;--card2:#171f2a;--line:#232c38;--tx:#e8edf3;--mut:#8b96a5;--dim:#5e6977;--amb:#f2b63c;--ok:#3ccf8e;--red:#ff5a5a;--br:#f2b63c;--blue:#6aa0ff}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--tx);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{overflow-x:hidden}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+header{position:sticky;top:0;z-index:20;background:rgba(11,15,20,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:center;gap:12px;height:52px;flex-wrap:wrap}
+.brand{font-weight:800;letter-spacing:-.02em;font-size:17px}.brand span{color:var(--amb)}
+.top .sp{flex:1}
+.nav a{padding:6px 10px;font-size:13px;color:var(--mut)}
+.hero{padding:34px 0 18px}
+.hero h1{font-size:clamp(26px,4.5vw,44px);font-weight:800;letter-spacing:-.03em;line-height:1.05}
+.hero p{color:var(--mut);max-width:760px;margin-top:10px;font-size:15px;line-height:1.5}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:14px;min-width:0}
+.card h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);font-weight:700;margin-bottom:10px}
+.sint{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.sint div{background:var(--card2);border-radius:10px;padding:12px}
+.sint b{display:block;font-size:22px;letter-spacing:-.02em}
+.sint small{color:var(--mut);font-size:12px;line-height:1.4;display:block}
+.sel{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+select{font:inherit;background:var(--card2);color:var(--tx);border:1px solid var(--line);border-radius:8px;padding:8px 10px;max-width:100%}
+.big{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.big .v{font-size:clamp(34px,6vw,56px);font-weight:800;letter-spacing:-.03em;color:var(--amb)}
+.big .r{color:var(--mut);font-size:14px}
+.strip{position:relative;height:74px;margin:14px 0 6px}
+.strip .axis{position:absolute;left:0;right:0;top:40px;height:2px;background:var(--line)}
+.strip .dot{position:absolute;top:34px;width:7px;height:7px;border-radius:50%;background:#44506080;transform:translateX(-50%)}
+.strip .dot.peer{background:var(--blue);width:9px;height:9px;top:33px;z-index:2}
+.strip .dot.br{background:var(--amb);width:16px;height:16px;top:30px;z-index:3;box-shadow:0 0 0 4px #f2b63c33}
+.strip .lab{position:absolute;top:0;font-size:10px;color:var(--dim);transform:translateX(-50%);white-space:nowrap}
+.strip .lab.br{color:var(--amb);font-weight:700;top:52px}
+.viz{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.viz{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:6px 6px;border-bottom:1px dashed var(--line);text-align:left}
+th{color:var(--mut);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+td.n,th.n{text-align:right}
+tr.br td{background:#f2b63c14;font-weight:700}
+tr.peer td:first-child{color:var(--blue)}
+.tag{display:inline-block;font-size:10px;padding:2px 6px;border-radius:999px;background:var(--card2);color:var(--mut);margin-left:6px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.mini{background:var(--card2);border-radius:10px;padding:12px;cursor:pointer;border:1px solid transparent}
+.mini:hover{border-color:var(--amb)}
+.mini h4{font-size:13px;font-weight:600;margin-bottom:4px}
+.mini .val{font-size:20px;font-weight:800;letter-spacing:-.02em}
+.mini .val small{font-size:11px;color:var(--mut);font-weight:500}
+.mini p{font-size:11px;color:var(--mut);line-height:1.4;margin-top:4px}
+.bar{height:6px;border-radius:3px;background:#2a3442;margin-top:8px;position:relative}
+.bar i{position:absolute;top:-3px;width:12px;height:12px;border-radius:50%;background:var(--amb);transform:translateX(-50%)}
+.note{font-size:11px;color:var(--dim);line-height:1.45;margin-top:8px}
+footer{border-top:1px solid var(--line);padding:18px 0 40px;font-size:12px;color:var(--mut);line-height:1.6;margin-top:24px}
+</style>
+</head>
+<body>
+<header><div class="wrap top">
+ <div class="brand">A CONTA <span>BRASIL</span> <span style="color:var(--mut);font-weight:500;font-size:13px">· que país somos</span></div>
+ <div class="sp"></div>
+ <nav class="nav"><a href="../">Brasil, 24 anos</a><a href="../apuracao/">Apuração</a><a href="../radar/">Radar</a></nav>
+</div></header>
+
+<main class="wrap">
+ <section class="hero">
+  <h1>Que país somos, indicador por indicador</h1>
+  <p>O Brasil se compara com quem, de verdade? Para cada indicador do Banco Mundial, esta página mostra o valor do Brasil, a posição entre os países com dado disponível e <b>quais países estão no mesmo nível hoje</b>. Nada de média de "países emergentes": é vizinho por vizinho, com ano e fonte.</p>
+ </section>
+
+ <div class="card">
+  <h2>Síntese — com quem o Brasil mais se parece</h2>
+  <div class="sint" id="sint"></div>
+  <div class="note">Como é calculado: em cada indicador, tomamos os 6 países mais próximos do valor do Brasil (3 acima, 3 abaixo). Os países que mais aparecem como vizinhos são os que mais se parecem com o Brasil no conjunto. Os 19 países de referência do estudo "Brasil, 24 anos" aparecem em azul.</div>
+ </div>
+
+ <div class="card">
+  <div class="sel"><label for="ind" style="color:var(--mut);font-size:13px">Indicador</label><select id="ind"></select><span class="note" id="indAno" style="margin:0"></span></div>
+  <div class="big"><span class="v mono" id="brV">—</span><span class="r" id="brR"></span></div>
+  <div class="strip" id="strip"></div>
+  <div class="viz">
+   <div><h2>Vizinhos do Brasil neste indicador</h2><table id="viz"></table></div>
+   <div><h2>Ranking completo <span class="tag" id="nTot"></span></h2><div style="max-height:420px;overflow:auto"><table id="rank"></table></div></div>
+  </div>
+  <div class="note" id="indNota"></div>
+ </div>
+
+ <div class="card">
+  <h2>Todos os indicadores — toque para abrir</h2>
+  <div class="grid3" id="grid"></div>
+ </div>
+</main>
+
+<footer><div class="wrap">
+ Fonte: Banco Mundial, API v2 (valor mais recente disponível por país, <span class="mono">mrnev=1</span>), lida em <span id="gerado"></span>. Cada indicador mostra o ano do dado do Brasil; o ano dos vizinhos pode diferir (passe o mouse). Dívida e receita tributária são do governo central (definição do FMI/GFS), por isso diferem da DBGG do BCB. <b>Material independente de João Marques · A Conta Brasil.</b>
+</div></footer>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const PEERS=new Set(['CHN','IND','TUR','PAN','DOM','KOR','POL','CHL','MEX','COL','PER','IDN','MYS','THA','VNM','ZAF','ARG','RUS','ROU','HUN']);
+const INV={ 'FP.CPI.TOTL.ZG':1,'GC.DOD.TOTL.GD.ZS':1,'VC.IHR.PSRC.P5':1,'SP.DYN.IMRT.IN':1,'SI.POV.GINI':1,'FR.INR.RINR':1,'FR.INR.LEND':1,'SL.UEM.TOTL.ZS':1 }; // menor = melhor
+const SKIP=new Set(['SP.POP.TOTL','CC.EST','RL.EST','GE.EST']);
+const fmtN=(v,k)=>{if(k==='NY.GDP.PCAP.PP.KD')return 'US$ '+Math.round(v).toLocaleString('pt-BR');if(Math.abs(v)>=1000)return Math.round(v).toLocaleString('pt-BR');return v.toLocaleString('pt-BR',{maximumFractionDigits:2});};
+const PT={'Brazil':'Brasil','Mexico':'México','United States':'Estados Unidos','Germany':'Alemanha','France':'França','Italy':'Itália','Spain':'Espanha','United Kingdom':'Reino Unido','Japan':'Japão','China':'China','India':'Índia','Russian Federation':'Rússia','Turkiye':'Turquia','Korea, Rep.':'Coreia do Sul','Poland':'Polônia','Chile':'Chile','Colombia':'Colômbia','Peru':'Peru','Argentina':'Argentina','Indonesia':'Indonésia','Malaysia':'Malásia','Thailand':'Tailândia','Viet Nam':'Vietnã','South Africa':'África do Sul','Romania':'Romênia','Hungary':'Hungria','Panama':'Panamá','Dominican Republic':'República Dominicana','Paraguay':'Paraguai','Uruguay':'Uruguai','Bolivia':'Bolívia','Ecuador':'Equador','Venezuela, RB':'Venezuela','Egypt, Arab Rep.':'Egito','Nigeria':'Nigéria','Kenya':'Quênia','Ethiopia':'Etiópia','Morocco':'Marrocos','Algeria':'Argélia','Tunisia':'Tunísia','Saudi Arabia':'Arábia Saudita','Iran, Islamic Rep.':'Irã','Iraq':'Iraque','Pakistan':'Paquistão','Bangladesh':'Bangladesh','Philippines':'Filipinas','Australia':'Austrália','Canada':'Canadá','New Zealand':'Nova Zelândia','Netherlands':'Países Baixos','Belgium':'Bélgica','Switzerland':'Suíça','Austria':'Áustria','Sweden':'Suécia','Norway':'Noruega','Denmark':'Dinamarca','Finland':'Finlândia','Ireland':'Irlanda','Portugal':'Portugal','Greece':'Grécia','Czechia':'Tchéquia','Slovak Republic':'Eslováquia','Ukraine':'Ucrânia','Kazakhstan':'Cazaquistão','Azerbaijan':'Azerbaijão','Armenia':'Armênia','Georgia':'Geórgia','Bosnia and Herzegovina':'Bósnia e Herzegovina','Serbia':'Sérvia','Croatia':'Croácia','Bulgaria':'Bulgária','Albania':'Albânia','North Macedonia':'Macedônia do Norte','Moldova':'Moldávia','Belarus':'Belarus','Jordan':'Jordânia','Lebanon':'Líbano','Israel':'Israel','United Arab Emirates':'Emirados Árabes','Qatar':'Catar','Kuwait':'Kuwait','Oman':'Omã','Singapore':'Singapura','Hong Kong SAR, China':'Hong Kong','Taiwan':'Taiwan','Mongolia':'Mongólia','Sri Lanka':'Sri Lanka','Nepal':'Nepal','Cambodia':'Camboja','Lao PDR':'Laos','Myanmar':'Mianmar','Angola':'Angola','Mozambique':'Moçambique','Ghana':'Gana','Senegal':'Senegal','Cameroon':'Camarões','Cote d\'Ivoire':'Costa do Marfim','Tanzania':'Tanzânia','Uganda':'Uganda','Zambia':'Zâmbia','Zimbabwe':'Zimbábue','Namibia':'Namíbia','Botswana':'Botsuana','Mauritius':'Maurício','Gabon':'Gabão','Congo, Dem. Rep.':'RD Congo','Congo, Rep.':'Congo','Sudan':'Sudão','Libya':'Líbia','Cuba':'Cuba','Jamaica':'Jamaica','Haiti':'Haiti','Honduras':'Honduras','Guatemala':'Guatemala','El Salvador':'El Salvador','Nicaragua':'Nicarágua','Costa Rica':'Costa Rica','Trinidad and Tobago':'Trinidad e Tobago','Barbados':'Barbados','Suriname':'Suriname','Guyana':'Guiana','Dominica':'Dominica','St. Vincent and the Grenadines':'São Vicente e Granadinas','St. Lucia':'Santa Lúcia','Turkmenistan':'Turcomenistão','Uzbekistan':'Uzbequistão','Kyrgyz Republic':'Quirguistão','Tajikistan':'Tajiquistão','Palau':'Palau','Fiji':'Fiji','Micronesia, Fed. Sts.':'Micronésia','Burundi':'Burundi','Luxembourg':'Luxemburgo','Iceland':'Islândia','Estonia':'Estônia','Latvia':'Letônia','Lithuania':'Lituânia','Slovenia':'Eslovênia','Malta':'Malta','Cyprus':'Chipre','Montenegro':'Montenegro','Kosovo':'Kosovo','Syrian Arab Republic':'Síria','Yemen, Rep.':'Iêmen','Afghanistan':'Afeganistão','Somalia':'Somália','Mali':'Mali','Niger':'Níger','Chad':'Chade','Rwanda':'Ruanda','Malawi':'Maláui','Madagascar':'Madagascar','Lesotho':'Lesoto','Eswatini':'Essuatíni','Equatorial Guinea':'Guiné Equatorial','Papua New Guinea':'Papua-Nova Guiné','Timor-Leste':'Timor-Leste','Bhutan':'Butão','Maldives':'Maldivas','Brunei Darussalam':'Brunei','Bahrain':'Bahrein','West Bank and Gaza':'Palestina'};
+const nm=c=>PT[c.name]||c.name;
+let D=null;
+fetch('../data/wb_indicadores.json').then(r=>r.json()).then(j=>{D=j;for(const k in D.meta)D.meta[k].nome=PT[D.meta[k].nome]||D.meta[k].nome;$('gerado').textContent=new Date(j.gerado).toLocaleDateString('pt-BR');init();});
+function lista(k){const d=D.dados[k];if(!d||!d.vals)return [];return Object.entries(d.vals).map(([c,o])=>({c,nome:D.meta[c].nome,v:o.v,ano:o.ano,regiao:D.meta[c].regiao})).sort((a,b)=>b.v-a.v);}
+function vizinhos(k,n=3){const L=lista(k);const i=L.findIndex(x=>x.c==='BRA');if(i<0)return {L,i,viz:[]};const viz=L.slice(Math.max(0,i-n),i).concat(L.slice(i+1,i+1+n));return {L,i,viz};}
+function init(){
+ const keys=Object.keys(D.dados).filter(k=>!SKIP.has(k)&&D.dados[k].vals&&D.dados[k].vals.BRA);
+ const sel=$('ind');sel.innerHTML=keys.map(k=>`<option value="${k}">${D.dados[k].nome}</option>`).join('');
+ sel.addEventListener('change',()=>render(sel.value));
+ // síntese
+ const cont={};for(const k of keys){for(const v of vizinhos(k).viz){cont[v.c]=cont[v.c]||{n:0,nome:v.nome,inds:[]};cont[v.c].n++;cont[v.c].inds.push(D.dados[k].nome);}}
+ const top=Object.entries(cont).sort((a,b)=>b[1].n-a[1].n).slice(0,6);
+ $('sint').innerHTML=top.map(([c,o])=>`<div><b style="color:${PEERS.has(c)?'var(--blue)':'var(--tx)'}">${o.nome}</b><small>vizinho do Brasil em <b style="display:inline;font-size:12px">${o.n}</b> de ${keys.length} indicadores</small><small style="margin-top:4px">${o.inds.slice(0,4).join(' · ')}${o.inds.length>4?' · …':''}</small></div>`).join('');
+ // grid
+ $('grid').innerHTML=keys.map(k=>{const {L,i,viz}=vizinhos(k);const b=L[i];const pct=L.length>1?i/(L.length-1):0;const melhor=INV[k]?'menor é melhor':'maior é melhor';return `<div class="mini" data-k="${k}"><h4>${D.dados[k].nome}</h4><div class="val mono">${fmtN(b.v,k)} <small>${b.ano}</small></div><p>${i+1}º de ${L.length} países (${melhor}) · como ${viz.slice(0,3).map(x=>x.nome).join(', ')}</p><div class="bar"><i style="left:${(INV[k]?pct:1-pct)*100}%"></i></div></div>`;}).join('');
+ document.querySelectorAll('.mini').forEach(m=>m.addEventListener('click',()=>{sel.value=m.dataset.k;render(m.dataset.k);window.scrollTo({top:$('ind').getBoundingClientRect().top+window.scrollY-70,behavior:'smooth'});}));
+ render(keys[0]);
+}
+function render(k){
+ const {L,i,viz}=vizinhos(k,5);const b=L[i];const d=D.dados[k];
+ $('indAno').textContent=`Brasil: dado de ${b.ano} · ${L.length} países com dado`;
+ $('brV').textContent=fmtN(b.v,k);
+ const melhorPos=INV[k]?L.length-i:i+1;
+ $('brR').innerHTML=`<b>${i+1}º</b> de ${L.length} em valor${INV[k]?' (menor é melhor: o Brasil está entre os <b>'+Math.round((i+1)/L.length*100)+'% mais altos</b>)':' (maior é melhor: o Brasil está no <b>'+(melhorPos)+'º</b> lugar)'}`;
+ // strip
+ const min=L[L.length-1].v,max=L[0].v;const X=v=>8+(v-min)/(max-min||1)*84;
+ let s='<div class="axis"></div>';for(const x of L){const cls=x.c==='BRA'?'br':PEERS.has(x.c)?'peer':'';s+=`<div class="dot ${cls}" style="left:${X(x.v)}%" title="${x.nome}: ${fmtN(x.v,k)} (${x.ano})"></div>`;if(x.c==='BRA')s+=`<div class="lab br" style="left:${X(x.v)}%">Brasil ${fmtN(x.v,k)}</div>`;}
+ s+=`<div class="lab" style="left:8%">${fmtN(min,k)}<br>${L[L.length-1].nome}</div><div class="lab" style="left:92%">${fmtN(max,k)}<br>${L[0].nome}</div>`;
+ $('strip').innerHTML=s;
+ const row=x=>`<tr class="${x.c==='BRA'?'br':PEERS.has(x.c)?'peer':''}"><td>${x.nome}<span class="tag">${x.regiao.replace('Latin America & Caribbean','América Latina e Caribe').replace('Europe & Central Asia','Europa e Ásia Central').replace('East Asia & Pacific','Ásia Oriental e Pacífico').replace('Middle East, North Africa, Afghanistan & Pakistan','Oriente Médio e Norte da África').replace('Middle East & North Africa','Oriente Médio e Norte da África').replace('Sub-Saharan Africa','África Subsaariana').replace('North America','América do Norte').replace('South Asia','Sul da Ásia')}</span></td><td class="n mono">${fmtN(x.v,k)}</td><td class="n mono" style="color:var(--dim)">${x.ano}</td></tr>`;
+ const acima=viz.slice(0,Math.min(5,i)),abaixo=viz.slice(Math.min(5,i));
+ $('viz').innerHTML='<tr><th>país</th><th class="n">valor</th><th class="n">ano</th></tr>'+acima.map(row).join('')+row(b)+abaixo.map(row).join('');
+ $('rank').innerHTML='<tr><th>#</th><th>país</th><th class="n">valor</th></tr>'+L.map((x,j)=>`<tr class="${x.c==='BRA'?'br':PEERS.has(x.c)?'peer':''}"><td class="mono" style="color:var(--dim)">${j+1}</td><td>${x.nome}</td><td class="n mono">${fmtN(x.v,k)}</td></tr>`).join('');
+ $('nTot').textContent=L.length+' países';
+ $('indNota').textContent=`Banco Mundial, indicador ${k}. ${INV[k]?'Neste indicador, valor menor é melhor.':'Neste indicador, valor maior é melhor.'} Países sem dado recente não aparecem.`;
+ // destaque no ranking
+ setTimeout(()=>{const el=$('rank').querySelector('tr.br');if(el)el.scrollIntoView({block:'center'});},50);
+}
+})();
+</script>
+</body>
+</html>
