@@ -1,1 +1,1 @@
-{ "cleanUrls": true, "functions": { "api/exterior.js": { "maxDuration": 30 }, "api/projecao.js": { "maxDuration": 30 } } }
+{ "cleanUrls": true, "functions": { "api/exterior.js": { "maxDuration": 30 }, "api/projecao.js": { "maxDuration": 30 }, "api/monitor.js": { "maxDuration": 60 }, "api/bcb.js": { "maxDuration": 20 } } }

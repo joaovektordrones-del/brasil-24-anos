@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contadores do Brasil — dívida, juros, impostos, em tempo real · A Conta Brasil</title>
+<meta name="description" content="Quanto o Brasil paga de juros por segundo, quanto a dívida cresce, quanto se arrecada: contadores ao vivo calculados a partir das séries oficiais do Banco Central e do Tesouro, com a fórmula aberta.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0f14;--card:#121821;--card2:#171f2a;--line:#232c38;--tx:#e8edf3;--mut:#8b96a5;--dim:#5e6977;--amb:#f2b63c;--ok:#3ccf8e;--red:#ff5a5a;--blue:#6aa0ff}
+*{box-sizing:border-box;margin:0;padding:0}html,body{background:var(--bg);color:var(--tx);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}body{overflow-x:hidden}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+header{position:sticky;top:0;z-index:20;background:rgba(11,15,20,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}.top{display:flex;align-items:center;gap:12px;height:52px;flex-wrap:wrap}.brand{font-weight:800;letter-spacing:-.02em;font-size:17px}.brand span{color:var(--amb)}.top .sp{flex:1}.nav a{padding:6px 10px;font-size:13px;color:var(--mut)}
+.hero{padding:30px 0 8px}.hero h1{font-size:clamp(24px,4vw,38px);font-weight:800;letter-spacing:-.03em;line-height:1.05}.hero p{color:var(--mut);max-width:800px;margin-top:10px;font-size:14px;line-height:1.5}
+.big{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-top:14px;min-width:0}
+.big small{color:var(--mut);font-size:13px;display:block}.big .v{font-size:clamp(30px,6.5vw,66px);font-weight:800;letter-spacing:-.03em;line-height:1.05;color:var(--amb);word-break:break-all}
+.big .v.red{color:var(--red)}.big .sub{font-size:13px;color:var(--mut);margin-top:8px;line-height:1.5}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:14px;min-width:0}.card h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);font-weight:700;margin-bottom:10px}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.kpi div{background:var(--card2);border-radius:10px;padding:12px}.kpi b{display:block;font-size:22px;letter-spacing:-.02em}.kpi small{color:var(--mut);font-size:12px;line-height:1.4;display:block}
+.note{font-size:12px;color:var(--dim);line-height:1.45;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:6px;border-bottom:1px dashed var(--line);text-align:left}th{color:var(--mut);font-size:11px;font-weight:600;text-transform:uppercase}td.n{text-align:right}
+footer{border-top:1px solid var(--line);padding:18px 0 40px;font-size:12px;color:var(--mut);line-height:1.6;margin-top:24px}
+</style>
+</head>
+<body>
+<header><div class="wrap top"><div class="brand">A CONTA <span>BRASIL</span> <span style="color:var(--mut);font-weight:500;font-size:13px">· contadores</span></div><div class="sp"></div><nav class="nav"><a href="../monitor/">Monitor</a><a href="../cenarios/">Cenários</a><a href="../pais/">Que país somos</a><a href="../">Brasil, 24 anos</a></nav></div></header>
+<main class="wrap">
+ <section class="hero"><h1>A conta correndo</h1><p>Contadores no estilo "impostômetro", mas com a conta aberta: cada número abaixo é uma série oficial (Banco Central, Tesouro, Receita) distribuída pelo tempo. O que é <b>medido</b> aparece com data; o que corre por segundo é <b>projeção linear do último dado oficial</b>, e a fórmula está escrita embaixo de cada contador.</p></section>
+
+ <div class="g">
+  <div class="big"><small>Juros da dívida pública pagos em 2026, até agora</small><div class="v red mono" id="juros">—</div><div class="sub">Base: R$ 1,182 trilhão em 12 meses (8,86% do PIB), BCB, ago/2026 → <span class="mono">R$ 37.475 por segundo</span>. Fórmula: 1,182 tri ÷ 365 × dias decorridos no ano. <a href="https://portaldeprefeitura.com.br/brasil/brasil-registra-deficit-nas-contas-publicas-de-r-10-bilhoes/633162/" target="_blank" rel="noopener">fonte</a></div></div>
+  <div class="big"><small>Dívida bruta do governo geral, agora</small><div class="v mono" id="divida">—</div><div class="sub">Base: R$ 11,06 trilhões em ago/2026 (82,9% do PIB), BCB. Projeção: cresce pelos juros líquidos de emissão (≈ +10,5 p.p. do PIB em 12 meses, IFI) descontado o PIB nominal — aqui aproximado por <span class="mono">+R$ 1,05 tri/ano</span>. Dado oficial mais recente: <span id="dbggOf">—</span>.</div></div>
+ </div>
+ <div class="g">
+  <div class="big"><small>Juros pagos desde que você abriu esta página</small><div class="v red mono" id="jurosSess">—</div><div class="sub">Mesma base: R$ 37.475/segundo. Um ano de juros paga ~12 anos de Bolsa Família (R$ 100 bi/ano) — não é opinião, é divisão.</div></div>
+  <div class="big"><small>Arrecadação federal em 2026, até agora</small><div class="v mono" id="arrec">—</div><div class="sub">Base: arrecadação federal de 2025, ≈ R$ 2,76 trilhões (Receita Federal, série anual — valor a confirmar no XLSX oficial) projetada para 2026 com crescimento nominal de 8% (IPCA ~5% + PIB ~2% + ganho real). Fórmula: 2,98 tri ÷ 365 × dias. Estimativa — a RFB publica o dado mensal no fim de cada mês. <span style="color:var(--amb)">Calibrar com o relatório mensal.</span></div></div>
+ </div>
+
+ <div class="card"><h2>Medido, não projetado — últimas leituras do Banco Central</h2><div class="kpi" id="kpi">carregando BCB…</div><div class="note">Séries SGS: Selic meta (432), IPCA mensal (433) e 12 meses (13522), DBGG % PIB (13762) e R$ (13761), DLSP % PIB (4513), câmbio venda (1), reservas (3546). Atualiza a cada 30 min; o BCB publica dívida e fiscal com ~1 mês de defasagem.</div></div>
+ <div class="card"><h2>Como ler</h2><p style="font-size:13px;color:#cfd6df;line-height:1.55">O "impostômetro" original (ACSP) distribui por segundo uma projeção anual calibrada com dados oficiais; aqui fazemos o mesmo, mas mostrando a base, a fórmula e a data. Nenhum contador desta página é "ao vivo" no sentido literal — o governo não publica juros por segundo. O que é real: a série oficial e a aritmética. O que é projeção: a reta até o próximo dado.</p></div>
+</main>
+<footer><div class="wrap">Fontes: BCB SGS (api.bcb.gov.br), estatísticas fiscais do BCB (set/2026), IFI RAF 116, Receita Federal (arrecadação anual). <b>Material independente de João Marques · A Conta Brasil.</b></div></footer>
+<script>
+(function(){
+const $=id=>document.getElementById(id);const API=location.hostname.endsWith('github.io')?'https://acontabrasil-seven.vercel.app':'';
+const R=n=>'R$ '+Math.floor(n).toLocaleString('pt-BR');
+const JUROS_ANO=1.182e12, DIV_BASE=11.06e12, DIV_BASE_DATA=new Date('2026-08-31T00:00:00-03:00'), DIV_ANO=1.05e12, ARREC_ANO=2.98e12;
+const ini=new Date('2026-01-01T00:00:00-03:00');const abriu=Date.now();
+function tick(){const now=Date.now();const sAno=(now-ini)/1000;const sBase=(now-DIV_BASE_DATA)/1000;
+ $('juros').textContent=R(JUROS_ANO/31536000*sAno);$('jurosSess').textContent=R(JUROS_ANO/31536000*(now-abriu)/1000);
+ $('divida').textContent=R(DIV_BASE+DIV_ANO/31536000*sBase);$('arrec').textContent=R(ARREC_ANO/31536000*sAno);}
+tick();setInterval(tick,100);
+fetch(API+'/api/bcb').then(r=>r.json()).then(j=>{const s=j.series;const last=k=>s[k]&&s[k].serie&&s[k].serie.length?s[k].serie[s[k].serie.length-1]:null;const f=(k,fmt)=>{const v=last(k);return v?`<b class="mono">${fmt(v.v)}</b><small>${v.d}</small>`:'<b>—</b><small>sem leitura</small>';};
+ const pc=v=>v.toLocaleString('pt-BR',{maximumFractionDigits:2})+'%';
+ $('kpi').innerHTML=`<div><small>Selic (meta)</small>${f('selic',pc)}</div><div><small>IPCA 12 meses</small>${f('ipca12',pc)}</div><div><small>IPCA no mês</small>${f('ipca_mes',pc)}</div><div><small>Dívida bruta (% PIB)</small>${f('dbgg_pib',pc)}</div><div><small>Dívida bruta (R$ mi)</small>${f('dbgg_rs',v=>'R$ '+(v/1e6).toLocaleString('pt-BR',{maximumFractionDigits:2})+' tri')}</div><div><small>Dívida líquida (% PIB)</small>${f('dlsp_pib',pc)}</div><div><small>Dólar (venda)</small>${f('cambio',v=>'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:4}))}</div><div><small>Reservas (US$ mi)</small>${f('reservas',v=>'US$ '+(v/1e3).toLocaleString('pt-BR',{maximumFractionDigits:1})+' bi')}</div>`;
+ const d=last('dbgg_rs');if(d)$('dbggOf').textContent='R$ '+(d.v/1e6).toLocaleString('pt-BR',{maximumFractionDigits:2})+' tri em '+d.d;
+}).catch(()=>{$('kpi').innerHTML='<div class="note">Sem resposta do BCB agora.</div>';});
+})();
+</script>
+</body>
+</html>
